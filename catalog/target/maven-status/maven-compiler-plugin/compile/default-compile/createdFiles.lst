@@ -1,3 +1,6 @@
+com/oms/catalog/entity/CatalogItemEntity.class
 com/oms/catalog/service/CatelogService.class
 com/oms/catalog/CatalogApplication.class
+com/oms/catalog/repository/CatalogRepository.class
 com/oms/catalog/controller/CatelogController.class
+com/oms/catalog/dto/CatalogDTO.class
