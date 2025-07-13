@@ -6,7 +6,7 @@ import jakarta.persistence.*;
 @Table(name = "catelog_items")
 public class CatalogItemEntity {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private int id;
 
@@ -21,6 +21,8 @@ public class CatalogItemEntity {
 
     @Column(name = "available_stock")
     private int availableStock;
+
+    public CatalogItemEntity() {}
 
     public CatalogItemEntity(String name, Double pricePerUnit, String category, Integer availableStock) {
         this.name = name;
