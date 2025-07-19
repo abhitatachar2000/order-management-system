@@ -14,20 +14,63 @@ public class CatalogService {
 
     Logger logger = LoggerFactory.getLogger(CatalogService.class);
 
-    @Autowired
     private CatalogRepository catalogRepository;
+
+    public CatalogService(CatalogRepository catalogRepository) {
+        this.catalogRepository = catalogRepository;
+    }
+
+    public CatalogItemEntity addNewItem(CatalogItemEntity item) throws RuntimeException {
+        try {
+            CatalogItemEntity returnedItem = catalogRepository.save(item);
+            logger.info("New item successfully added");
+            return returnedItem;
+        } catch (RuntimeException e) {
+            logger.error("Adding new item failed: ");
+            e.printStackTrace();
+            throw e;
+        }
+    }
 
     public List<CatalogItemEntity> getAllCatalogItems() {
         return catalogRepository.findAll();
     }
 
-    public void addNewItem(CatalogItemEntity item) {
-        try {
-            catalogRepository.save(item);
-            logger.info("New item successfully added");
-        } catch (Exception e) {
-            logger.error("Adding new item failed: ");
-            e.printStackTrace();
+
+    public CatalogItemEntity getItemById(int id) {
+        CatalogItemEntity item = catalogRepository.findById(id).orElse(null);
+        if (item == null) {
+            logger.info(String.format("Could not find item with id: %s", id));
+            return item;
         }
+        logger.info(String.format("Found item with id ", id));
+        return item;
+    }
+
+    public List<CatalogItemEntity> getItemsByCategory(String category) {
+        List<CatalogItemEntity> itemsFound  = catalogRepository.findAllByCategory(category);
+        return itemsFound;
+    }
+
+    public Boolean deleteById(int id) {
+        if (getItemById(id) == null) {
+            logger.error(String.format("No item found with id: %s", id));
+            return false;
+        } else {
+            catalogRepository.deleteById(id);
+            logger.info(String.format("Deleted item with id: %s", id));
+            return true;
+        }
+    }
+
+    public Boolean deleteAllItemsOfCategory(String category){
+        if (getItemsByCategory(category).isEmpty()) {
+            logger.error(String.format("Could not delete items with category: %s", category));
+            return false;
+        }
+
+        catalogRepository.deleteAllByCategory(category);
+        logger.info(String.format("Deleted items of category %s", category));
+        return true;
     }
 }
