@@ -191,4 +191,34 @@ public class CatalogServiceTest {
         Boolean deletedAllItemsOfCategory = catalogService.deleteAllItemsOfCategory("category1");
         Assertions.assertFalse(deletedAllItemsOfCategory);
     }
+
+    @Test
+    void updatesItemIfItemExists() {
+        CatalogItemEntity itemEntityOne = new CatalogItemEntity(
+                "item1",
+                12.20,
+                "category1",
+                10
+        );
+        itemEntityOne.setID(1);
+        int id = 1;
+        Mockito.doReturn(Optional.of(itemEntityOne)).when(catalogRepository).findById(id);
+        Mockito.doReturn(itemEntityOne).when(catalogRepository).save(any(CatalogItemEntity.class));
+        CatalogItemEntity returnedItem = catalogService.updateItem(id, itemEntityOne);
+        Assertions.assertEquals(id, returnedItem.getId());
+    }
+
+    @Test
+    void returnsNullWhenUpdatingIDDoesNotExist() {
+        CatalogItemEntity itemEntityOne = new CatalogItemEntity(
+                "item1",
+                12.20,
+                "category1",
+                10
+        );
+        int id = 1;
+        Mockito.doReturn(Optional.empty()).when(catalogRepository).findById(id);
+        CatalogItemEntity returnedItem = catalogService.updateItem(id, itemEntityOne);
+        Assertions.assertNull(returnedItem);
+    }
 }

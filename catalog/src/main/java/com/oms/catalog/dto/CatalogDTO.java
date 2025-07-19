@@ -8,8 +8,7 @@ public class CatalogDTO {
     private String category;
     private int availableStock;
 
-    public CatalogDTO(int id, String name, Double pricePerUnit, String category, int availableStock) {
-        this.id = id;
+    public CatalogDTO(String name, Double pricePerUnit, String category, int availableStock) {
         this.name = name;
         this.pricePerUnit = pricePerUnit;
         this.category = category;

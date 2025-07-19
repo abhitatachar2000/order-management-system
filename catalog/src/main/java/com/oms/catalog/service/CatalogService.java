@@ -32,6 +32,17 @@ public class CatalogService {
         }
     }
 
+    public CatalogItemEntity updateItem(int id, CatalogItemEntity item) throws RuntimeException {
+        if (getItemById(id) == null) {
+            logger.error(String.format("Failed to update item with id %s", id));
+            return null;
+        }
+        item.setID(id);
+        CatalogItemEntity returnedItem = catalogRepository.save(item);
+        logger.info(String.format("Updated item with id %s", id));
+        return returnedItem;
+    }
+
     public List<CatalogItemEntity> getAllCatalogItems() {
         return catalogRepository.findAll();
     }

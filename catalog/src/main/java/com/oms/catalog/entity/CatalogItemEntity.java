@@ -31,6 +31,10 @@ public class CatalogItemEntity {
         this.availableStock = availableStock;
     }
 
+    public void setID(int id) {
+        this.id = id;
+    }
+
     public int getId() {
         return id;
     }
