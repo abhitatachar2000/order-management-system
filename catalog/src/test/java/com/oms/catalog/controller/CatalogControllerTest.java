@@ -128,6 +128,19 @@ public class CatalogControllerTest {
     }
 
     @Test
+    void shouldThrow5xxErrorIfExceptionOccursWhileFindingTheElement() throws Exception {
+        CatalogItemEntity itemEntityOne = new CatalogItemEntity(
+                "item1",
+                12.20,
+                "category1",
+                10
+        );
+        Mockito.doThrow(RuntimeException.class).when(catalogService).getItemById(1);
+        mockMvc.perform(get("/api/v1/catalog/items/1"))
+                .andExpect(status().is5xxServerError());
+    }
+
+    @Test
     void shouldReturnAllItemsOfRequiredCategory() throws Exception {
         CatalogItemEntity itemEntityOne = new CatalogItemEntity(
                 "item1",
@@ -196,37 +209,37 @@ public class CatalogControllerTest {
 
 
     @Test
-    void deletesItemForProvidedId() throws Exception {
+    void shouldDeleteItemForProvidedId() throws Exception {
         Mockito.doReturn(true).when(catalogService).deleteById(1);
         mockMvc.perform(delete("/api/v1/catalog/items/1")).andExpect(status().isNoContent());
     }
 
     @Test
-    void itemDeletionFailedThen5xxStatusCodeIsReturned() throws Exception {
+    void shouldThrow404IfItemNotFoundForDeletion() throws Exception {
         Mockito.doReturn(false).when(catalogService).deleteById(1);
-        mockMvc.perform(delete("/api/v1/catalog/items/1")).andExpect(status().is5xxServerError());
+        mockMvc.perform(delete("/api/v1/catalog/items/1")).andExpect(status().is4xxClientError());
     }
 
     @Test
-    void itemDeletionThrowsExceptionThen5xxStatusCodeisReturned() throws Exception {
+    void shouldthrow5xxIfItemDeletionFailsBecauseOfException() throws Exception {
         Mockito.doThrow(RuntimeException.class).when(catalogService).deleteById(1);
         mockMvc.perform(delete("/api/v1/catalog/items/1")).andExpect(status().is5xxServerError());
     }
 
     @Test
-    void deletesByCategoryForTheProvidedCategory() throws Exception {
+    void shouldDeleteAllItemsOfTheProvidedCategory() throws Exception {
         Mockito.doReturn(true).when(catalogService).deleteAllItemsOfCategory("category1");
         mockMvc.perform(delete("/api/v1/catalog/items?category=category1")).andExpect(status().isNoContent());
     }
 
     @Test
-    void deleteByCategoryThrows5xxStatusCodeIfNoItemOfCategoryExists() throws Exception {
+    void shouldThrow404IfNoItemsOfProvidedCategoryExists() throws Exception {
         Mockito.doReturn(false).when(catalogService).deleteAllItemsOfCategory("category1");
-        mockMvc.perform(delete("/api/v1/catalog/items?category=category1")).andExpect(status().is5xxServerError());
+        mockMvc.perform(delete("/api/v1/catalog/items?category=category1")).andExpect(status().is4xxClientError());
     }
 
     @Test
-    void deleteByCategoryThrows5xxStatusCodeIfExcpetionArisesWhileDeletion() throws Exception {
+    void shouldThrow5xxStatusCodeIfDeletionByCategoryFailsBecauseOfException() throws Exception {
         Mockito.doThrow(RuntimeException.class).when(catalogService).deleteAllItemsOfCategory("category1");
         mockMvc.perform(delete("/api/v1/catalog/items?category=category1")).andExpect(status().is5xxServerError());
     }

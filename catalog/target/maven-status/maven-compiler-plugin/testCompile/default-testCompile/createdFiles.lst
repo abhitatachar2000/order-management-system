@@ -1,3 +1,4 @@
 com/oms/catalog/repository/CatalogRepositoryTest.class
+com/oms/catalog/controller/CatalogControllerTest.class
 com/oms/catalog/service/CatalogServiceTest.class
 com/oms/catalog/CatalogApplicationTests.class

@@ -31,44 +31,44 @@ public class CatalogController {
     public ResponseEntity<List<CatalogItemEntity>> getAllItems() throws JsonProcessingException {
         try {
             List<CatalogItemEntity> items = catalogService.getAllCatalogItems();
-            return ResponseEntity.status(200).body(items);
+            return ResponseEntity.ok(items);
         } catch (Exception e) {
             e.printStackTrace();
-            return ResponseEntity.status(500).body(new ArrayList<CatalogItemEntity>());
+            return ResponseEntity.status(500).body(new ArrayList<>());
         }
     }
 
     @PostMapping("/items")
-    public ResponseEntity<CatalogItemEntity> createNewItem(@RequestBody CatalogDTO catalogDTO) {
+    public ResponseEntity<Void> createNewItem(@RequestBody CatalogDTO catalogDTO) {
         try {
             CatalogItemEntity itemEntity = convertDTOToEntity(catalogDTO);
             catalogService.addNewItem(itemEntity);
-            return ResponseEntity.status(201).build();
+            return ResponseEntity.status(201).build(); // 201 Created
         } catch (Exception e) {
             e.printStackTrace();
-            return ResponseEntity.status(500).body(new CatalogItemEntity());
+            return ResponseEntity.status(500).build();
         }
     }
 
-    @RequestMapping("/items/{id}")
+    @GetMapping("/items/{id}")
     public ResponseEntity<CatalogItemEntity> returnSingleItem(@PathVariable int id) {
         try {
             CatalogItemEntity catalogItem = catalogService.getItemById(id);
             if (catalogItem == null) {
-                throw new RuntimeException(String.format("No item found with id %s", id));
+                return ResponseEntity.status(404).build(); // 404 Not Found
             }
-            return ResponseEntity.status(200).body(catalogItem);
+            return ResponseEntity.ok(catalogItem); // 200 OK
         } catch (Exception e) {
             e.printStackTrace();
-            return ResponseEntity.status(404).build();
+            return ResponseEntity.status(500).build();
         }
     }
 
     @GetMapping("/items/search")
-    public ResponseEntity<List<CatalogItemEntity>> findItemsOfCategory(@RequestParam String category){
+    public ResponseEntity<List<CatalogItemEntity>> findItemsOfCategory(@RequestParam String category) {
         try {
             List<CatalogItemEntity> catalogItems = catalogService.getItemsByCategory(category);
-            return ResponseEntity.status(200).body(catalogItems);
+            return ResponseEntity.ok(catalogItems);
         } catch (Exception e) {
             return ResponseEntity.status(500).build();
         }
@@ -79,33 +79,33 @@ public class CatalogController {
         try {
             CatalogItemEntity catalogItemEntity = convertDTOToEntity(catalogDTO);
             CatalogItemEntity catalogItem = catalogService.updateItem(id, catalogItemEntity);
-            return ResponseEntity.status(200).body(catalogItem);
+            return ResponseEntity.ok(catalogItem);
         } catch (Exception e) {
             return ResponseEntity.status(500).build();
         }
     }
 
     @DeleteMapping("/items/{id}")
-    public ResponseEntity<CatalogItemEntity> deleteCatalogItem(@PathVariable int id) {
+    public ResponseEntity<Void> deleteCatalogItem(@PathVariable int id) {
         try {
             Boolean itemDeleted = catalogService.deleteById(id);
             if (!itemDeleted) {
-                throw new RuntimeException(String.format("Could not delete item with id: %s", id));
+                return ResponseEntity.status(404).build(); // 404 Not Found
             }
-            return ResponseEntity.status(204).build();
-        } catch (Exception e){
+            return ResponseEntity.noContent().build(); // 204 No Content
+        } catch (Exception e) {
             return ResponseEntity.status(500).build();
         }
     }
 
     @DeleteMapping("/items")
-    public ResponseEntity<CatalogItemEntity> deleteByCategory(@RequestParam String category) {
+    public ResponseEntity<Void> deleteByCategory(@RequestParam String category) {
         try {
             Boolean itemsDeleted = catalogService.deleteAllItemsOfCategory(category);
             if (!itemsDeleted) {
-                throw new RuntimeException(String.format("Could not delete items of category: %s", category));
+                return ResponseEntity.status(404).build(); // 404 Not Found
             }
-            return ResponseEntity.status(204).build();
+            return ResponseEntity.noContent().build(); // 204 No Content
         } catch (Exception e) {
             return ResponseEntity.status(500).build();
         }
