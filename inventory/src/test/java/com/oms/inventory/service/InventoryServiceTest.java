@@ -1,19 +1,15 @@
-package com.oms.inventory;
+package com.oms.inventory.service;
 
 import com.oms.inventory.entity.InventoryItemEntity;
 import com.oms.inventory.repository.InventoryRepository;
-import com.oms.inventory.service.InventoryService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
-import javax.swing.text.html.Option;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;

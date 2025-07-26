@@ -5,6 +5,8 @@ public class InventoryItemDTO {
     private int id;
     private int quantity;
 
+    public InventoryItemDTO(){}
+
     public InventoryItemDTO(int id, int quantity) {
         this.id = id;
         this.quantity = quantity;
