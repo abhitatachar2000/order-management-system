@@ -57,7 +57,7 @@ public class CatalogController {
 
     @GetMapping("/items/{id}")
     public ResponseEntity<CatalogItemEntity> returnSingleItem(@PathVariable int id) {
-        logger.info(String.format("Received request to fetch item with id %s in the catalog"));
+        logger.info(String.format("Received request to fetch item with id %s in the catalog", id));
         try {
             CatalogItemEntity catalogItem = catalogService.getItemById(id);
             if (catalogItem == null) {
