@@ -71,13 +71,13 @@ public class InventoryController {
         }
     }
 
-    @PatchMapping("/items/{id}")
-    public ResponseEntity<?> updateItemById(@PathVariable("id") int id, @RequestBody InventoryItemDTO item){
+    @PatchMapping("/items")
+    public ResponseEntity<?> updateItemById( @RequestBody InventoryItemDTO item){
         try {
             InventoryItemEntity entity = dtoToEntityConverter(item);
             InventoryItemEntity updatedEntity = inventoryService.updateItem(entity);
             if (updatedEntity == null) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(String.format("No item found with id %s. Try creating a new item", id));
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(String.format("No item found with id %s. Try creating a new item", entity.getId()));
             } else {
                 return ResponseEntity.status(HttpStatus.OK).build();
             }

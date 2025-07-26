@@ -44,7 +44,7 @@ public class InventoryService {
 
     public InventoryItemEntity findItemById(int id) {
         try {
-            InventoryItemEntity foundItem = repository.findById(1).orElse(null);
+            InventoryItemEntity foundItem = repository.findById(id).orElse(null);
             if (foundItem == null) {
                 logger.info(String.format("No item with id %s found in inventory", id));
             } else {
