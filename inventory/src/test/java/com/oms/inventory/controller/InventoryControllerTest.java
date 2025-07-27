@@ -156,7 +156,7 @@ public class InventoryControllerTest {
         InventoryItemDTO updatedItem = new InventoryItemDTO(1, 20);
         InventoryItemEntity updatedItemEntity = new InventoryItemEntity(1, 20);
         Mockito.doReturn(updatedItemEntity).when(inventoryService).updateItem(any(InventoryItemEntity.class));
-        mockMvc.perform(patch("/api/v1/inventory/items/1")
+        mockMvc.perform(patch("/api/v1/inventory/items")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(om.writeValueAsString(updatedItem)))
                 .andExpect(status().isOk());
@@ -166,7 +166,7 @@ public class InventoryControllerTest {
     void updateItemReturns4xxWhenItemByIdDoesNotExist() throws Exception {
         InventoryItemDTO updatedItem = new InventoryItemDTO(1, 20);
         Mockito.doReturn(null).when(inventoryService).updateItem(any(InventoryItemEntity.class));
-        mockMvc.perform(patch("/api/v1/inventory/items/1")
+        mockMvc.perform(patch("/api/v1/inventory/items")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(om.writeValueAsString(updatedItem)))
                 .andExpect(status().isNotFound());
@@ -176,7 +176,7 @@ public class InventoryControllerTest {
     void updateItemReturns5xxWhenUpdationFails() throws Exception {
         InventoryItemDTO updatedItem = new InventoryItemDTO(1, 20);
         Mockito.doThrow(RuntimeException.class).when(inventoryService).updateItem(any(InventoryItemEntity.class));
-        mockMvc.perform(patch("/api/v1/inventory/items/1")
+        mockMvc.perform(patch("/api/v1/inventory/items")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(om.writeValueAsString(updatedItem)))
                 .andExpect(status().isInternalServerError());

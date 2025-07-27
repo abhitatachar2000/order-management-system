@@ -22,6 +22,7 @@
         <slf4j.version>2.0.9</slf4j.version>
         <h2.version>2.3.232</h2.version>
         <spring-boot-starter-test.version>3.5.3</spring-boot-starter-test.version>
+        <spring-webfux.version>6.2.9</spring-webfux.version>
     </properties>
 
     <dependencyManagement>
@@ -42,7 +43,11 @@
                 <artifactId>spring-boot-starter-data-jpa</artifactId>
                 <version>${spring.boot.version}</version>
             </dependency>
-
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-webflux</artifactId>
+                <version>${spring-webfux.version}</version>
+            </dependency>
             <!-- Common DB Dependencies -->
             <dependency>
                 <groupId>org.liquibase</groupId>

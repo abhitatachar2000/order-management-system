@@ -1,9 +1,9 @@
 com/oms/catalog/entity/CatalogItemEntity.class
-com/oms/catalog/filter/CorrelationIdFilter.class
-com/oms/catalog/controller/CatalogController.class
 com/oms/catalog/CatalogApplication.class
 com/oms/catalog/repository/CatalogRepository.class
-com/oms/catalog/webClient/InventoryServiceClient.class
 com/oms/catalog/filter/FilterConfig.class
-com/oms/catalog/service/CatalogService.class
 com/oms/catalog/dto/CatalogDTO.class
+com/oms/catalog/webClient/WebClientConfig.class
+com/oms/catalog/filter/CorrelationIdFilter.class
+com/oms/catalog/controller/CatalogController.class
+com/oms/catalog/service/CatalogService.class
