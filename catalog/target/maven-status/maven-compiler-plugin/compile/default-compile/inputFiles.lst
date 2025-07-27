@@ -6,4 +6,5 @@
 /Users/i527379/workspace/order-management-service/catalog/src/main/java/com/oms/catalog/filter/FilterConfig.java
 /Users/i527379/workspace/order-management-service/catalog/src/main/java/com/oms/catalog/repository/CatalogRepository.java
 /Users/i527379/workspace/order-management-service/catalog/src/main/java/com/oms/catalog/service/CatalogService.java
+/Users/i527379/workspace/order-management-service/catalog/src/main/java/com/oms/catalog/webClient/InventoryServiceWebClient.java
 /Users/i527379/workspace/order-management-service/catalog/src/main/java/com/oms/catalog/webClient/WebClientConfig.java

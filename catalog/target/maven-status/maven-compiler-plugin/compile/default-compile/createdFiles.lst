@@ -1,4 +1,5 @@
 com/oms/catalog/entity/CatalogItemEntity.class
+com/oms/catalog/webClient/InventoryServiceWebClient.class
 com/oms/catalog/CatalogApplication.class
 com/oms/catalog/repository/CatalogRepository.class
 com/oms/catalog/filter/FilterConfig.class
