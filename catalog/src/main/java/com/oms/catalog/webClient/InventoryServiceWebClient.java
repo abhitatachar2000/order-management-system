@@ -28,7 +28,7 @@ public class InventoryServiceWebClient {
         String correlationId = MDC.get(CORRELATION_ID_HEADER);
 
         return webClient.post()
-                .uri("/api/inventory/items")
+                .uri("/api/v1/inventory/items")
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .header(CORRELATION_ID_HEADER, correlationId)
                 .bodyValue(om.writeValueAsString(inventoryItemEntity))
