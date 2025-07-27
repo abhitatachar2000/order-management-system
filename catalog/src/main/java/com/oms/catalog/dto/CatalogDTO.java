@@ -8,11 +8,10 @@ public class CatalogDTO {
     private String category;
     private int availableStock;
 
-    public CatalogDTO(String name, Double pricePerUnit, String category, int availableStock) {
+    public CatalogDTO(String name, Double pricePerUnit, String category) {
         this.name = name;
         this.pricePerUnit = pricePerUnit;
         this.category = category;
-        this.availableStock = availableStock;
     }
 
     public int getId() {

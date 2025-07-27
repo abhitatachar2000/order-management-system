@@ -125,8 +125,7 @@ public class CatalogController {
         return new CatalogItemEntity(
                 catalogDTO.getName(),
                 catalogDTO.getPricePerUnit(),
-                catalogDTO.getCategory(),
-                catalogDTO.getAvailableStock()
+                catalogDTO.getCategory()
         );
     }
 

@@ -28,8 +28,7 @@ public class CatalogRepositoryTest {
         CatalogItemEntity newCatalogItem = new CatalogItemEntity(
                 "item1",
                 12.20,
-                "category1",
-                10
+                "category1"
         );
         CatalogItemEntity addedItem = catalogRepository.save(newCatalogItem);
         CatalogItemEntity retrievedItem = catalogRepository.findAll().get(0);
@@ -48,14 +47,12 @@ public class CatalogRepositoryTest {
         CatalogItemEntity catalogItem1 = new CatalogItemEntity(
                 "item1",
                 12.20,
-                "category1",
-                10
+                "category1"
         );
         CatalogItemEntity catalogItem2 = new CatalogItemEntity(
                 "item2",
                 16.0,
-                "category2",
-                10
+                "category2"
         );
         CatalogItemEntity addedItem1 = catalogRepository.save(catalogItem1);
         CatalogItemEntity addedItem2 = catalogRepository.save(catalogItem2);
@@ -72,14 +69,12 @@ public class CatalogRepositoryTest {
         CatalogItemEntity catalogItem1 = new CatalogItemEntity(
                 "item1",
                 12.20,
-                "category1",
-                10
+                "category1"
         );
         CatalogItemEntity catalogItem2 = new CatalogItemEntity(
                 "item2",
                 16.0,
-                "category2",
-                10
+                "category2"
         );
         CatalogItemEntity addedItem1 = catalogRepository.save(catalogItem1);
         CatalogItemEntity addedItem2 = catalogRepository.save(catalogItem2);
@@ -95,14 +90,12 @@ public class CatalogRepositoryTest {
         CatalogItemEntity catalogItem1 = new CatalogItemEntity(
                 "item1",
                 12.20,
-                "category1",
-                10
+                "category1"
         );
         CatalogItemEntity catalogItem2 = new CatalogItemEntity(
                 "item2",
                 16.0,
-                "category2",
-                10
+                "category2"
         );
         CatalogItemEntity addedItem1 = catalogRepository.save(catalogItem1);
         CatalogItemEntity addedItem2 = catalogRepository.save(catalogItem2);
@@ -116,20 +109,17 @@ public class CatalogRepositoryTest {
         CatalogItemEntity catalogItem1 = new CatalogItemEntity(
                 "item1",
                 12.20,
-                "category1",
-                10
+                "category1"
         );
         CatalogItemEntity catalogItem2 = new CatalogItemEntity(
                 "item2",
                 16.0,
-                "category2",
-                10
+                "category2"
         );
         CatalogItemEntity catalogItem3 = new CatalogItemEntity(
                 "item3",
                 19.67,
-                "category1",
-                5
+                "category1"
         );
 
         CatalogItemEntity addedItem1 = catalogRepository.save(catalogItem1);
@@ -147,20 +137,17 @@ public class CatalogRepositoryTest {
         CatalogItemEntity catalogItem1 = new CatalogItemEntity(
                 "item1",
                 12.20,
-                "category1",
-                10
+                "category1"
         );
         CatalogItemEntity catalogItem2 = new CatalogItemEntity(
                 "item2",
                 16.0,
-                "category2",
-                10
+                "category2"
         );
         CatalogItemEntity catalogItem3 = new CatalogItemEntity(
                 "item3",
                 19.67,
-                "category1",
-                5
+                "category1"
         );
 
         CatalogItemEntity addedItem1 = catalogRepository.save(catalogItem1);
@@ -176,20 +163,17 @@ public class CatalogRepositoryTest {
         CatalogItemEntity catalogItem1 = new CatalogItemEntity(
                 "item1",
                 12.20,
-                "category1",
-                10
+                "category1"
         );
         CatalogItemEntity catalogItem2 = new CatalogItemEntity(
                 "item2",
                 16.0,
-                "category2",
-                10
+                "category2"
         );
         CatalogItemEntity catalogItem3 = new CatalogItemEntity(
                 "item3",
                 19.67,
-                "category3",
-                5
+                "category3"
         );
 
         CatalogItemEntity addedItem1 = catalogRepository.save(catalogItem1);
@@ -206,20 +190,17 @@ public class CatalogRepositoryTest {
         CatalogItemEntity catalogItem1 = new CatalogItemEntity(
                 "item1",
                 12.20,
-                "category1",
-                10
+                "category1"
         );
         CatalogItemEntity catalogItem2 = new CatalogItemEntity(
                 "item2",
                 16.0,
-                "category2",
-                10
+                "category2"
         );
         CatalogItemEntity catalogItem3 = new CatalogItemEntity(
                 "item3",
                 19.67,
-                "category3",
-                5
+                "category3"
         );
 
         CatalogItemEntity addedItem1 = catalogRepository.save(catalogItem1);
@@ -236,20 +217,17 @@ public class CatalogRepositoryTest {
         CatalogItemEntity catalogItem1 = new CatalogItemEntity(
                 "item1",
                 12.20,
-                "category1",
-                10
+                "category1"
         );
         CatalogItemEntity catalogItem2 = new CatalogItemEntity(
                 "item2",
                 16.0,
-                "category2",
-                10
+                "category2"
         );
         CatalogItemEntity catalogItem3 = new CatalogItemEntity(
                 "item3",
                 19.67,
-                "category1",
-                5
+                "category1"
         );
 
         CatalogItemEntity addedItem1 = catalogRepository.save(catalogItem1);

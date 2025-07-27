@@ -2,13 +2,10 @@ package com.oms.catalog.service;
 
 import com.oms.catalog.entity.CatalogItemEntity;
 import com.oms.catalog.repository.CatalogRepository;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
@@ -39,8 +36,7 @@ public class CatalogServiceTest {
         CatalogItemEntity itemOne = new CatalogItemEntity(
                 "item1",
                 12.20,
-                "category1",
-                10
+                "category1"
         );
         Mockito.doReturn(itemOne).when(catalogRepository).save(any(CatalogItemEntity.class));
         Assertions.assertEquals(itemOne.getName(), catalogService.addNewItem(itemOne).getName());
@@ -51,8 +47,7 @@ public class CatalogServiceTest {
         CatalogItemEntity itemOne = new CatalogItemEntity(
                 "item1",
                 12.20,
-                "category1",
-                10
+                "category1"
         );
         Mockito.doThrow(RuntimeException.class).when(catalogRepository).save(any(CatalogItemEntity.class));
         Assertions.assertThrows(RuntimeException.class, () -> {catalogService.addNewItem(itemOne);});
@@ -70,20 +65,17 @@ public class CatalogServiceTest {
         CatalogItemEntity itemOne = new CatalogItemEntity(
                 "item1",
                 12.20,
-                "category1",
-                10
+                "category1"
         );
         CatalogItemEntity itemTwo = new CatalogItemEntity(
                 "item2",
                 16.00,
-                "category2",
-                15
+                "category2"
         );
         CatalogItemEntity itemThree = new CatalogItemEntity(
                 "item3",
                 14.50,
-                "category2",
-                5
+                "category2"
         );
 
         List<CatalogItemEntity> allItems = Arrays.asList(itemOne, itemTwo, itemThree);
@@ -96,8 +88,7 @@ public class CatalogServiceTest {
         CatalogItemEntity itemEntityOne = new CatalogItemEntity(
                 "item1",
                 12.20,
-                "category1",
-                10
+                "category1"
         );
 
         Mockito.doReturn(Optional.of(itemEntityOne)).when(catalogRepository).findById(1);
@@ -121,14 +112,12 @@ public class CatalogServiceTest {
         CatalogItemEntity itemEntityOne = new CatalogItemEntity(
                 "item1",
                 12.20,
-                "category1",
-                10
+                "category1"
         );
         CatalogItemEntity itemEntityTwo = new CatalogItemEntity(
                 "item2",
                 14.20,
-                "category1",
-                5
+                "category1"
         );
 
         Mockito.doReturn(Arrays.asList(itemEntityOne, itemEntityTwo))
@@ -155,8 +144,7 @@ public class CatalogServiceTest {
         CatalogItemEntity itemEntityOne = new CatalogItemEntity(
                 "item1",
                 12.20,
-                "category1",
-                10
+                "category1"
         );
         Mockito.doReturn(Optional.of(itemEntityOne)).when(catalogRepository).findById(1);
         Mockito.doNothing().when(catalogRepository).deleteById(1);
@@ -176,8 +164,7 @@ public class CatalogServiceTest {
         CatalogItemEntity itemEntityOne = new CatalogItemEntity(
                 "item1",
                 12.20,
-                "category1",
-                10
+                "category1"
         );
         Mockito.doReturn(Arrays.asList(itemEntityOne)).when(catalogRepository).findAllByCategory("category1");
         Mockito.doNothing().when(catalogRepository).deleteAllByCategory("category1");
@@ -197,8 +184,7 @@ public class CatalogServiceTest {
         CatalogItemEntity itemEntityOne = new CatalogItemEntity(
                 "item1",
                 12.20,
-                "category1",
-                10
+                "category1"
         );
         itemEntityOne.setID(1);
         int id = 1;
@@ -213,8 +199,7 @@ public class CatalogServiceTest {
         CatalogItemEntity itemEntityOne = new CatalogItemEntity(
                 "item1",
                 12.20,
-                "category1",
-                10
+                "category1"
         );
         int id = 1;
         Mockito.doReturn(Optional.empty()).when(catalogRepository).findById(id);

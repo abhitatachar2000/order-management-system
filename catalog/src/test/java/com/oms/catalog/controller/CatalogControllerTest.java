@@ -38,14 +38,12 @@ public class CatalogControllerTest {
         CatalogItemEntity itemEntityOne = new CatalogItemEntity(
                 "item1",
                 12.20,
-                "category1",
-                10
+                "category1"
         );
         CatalogItemEntity itemEntityTwo = new CatalogItemEntity(
                 "item2",
                 13.20,
-                "category1",
-                17
+                "category1"
         );
         Mockito.doReturn(Arrays.asList(itemEntityOne, itemEntityTwo)).when(catalogService).getAllCatalogItems();
 
@@ -68,14 +66,12 @@ public class CatalogControllerTest {
         CatalogItemEntity itemEntityOne = new CatalogItemEntity(
                 "item1",
                 12.20,
-                "category1",
-                10
+                "category1"
         );
         CatalogDTO itemDTO = new CatalogDTO(
                 "item1",
                 12.20,
-                "category1",
-                10
+                "category1"
         );
         Mockito.doReturn(itemEntityOne).when(catalogService).addNewItem(any(CatalogItemEntity.class));
         String jsonString = objectMapper.writeValueAsString(itemDTO);
@@ -90,8 +86,7 @@ public class CatalogControllerTest {
         CatalogDTO itemDTO = new CatalogDTO(
                 "item1",
                 12.20,
-                "category1",
-                10
+                "category1"
         );
         String jsonString = objectMapper.writeValueAsString(itemDTO);
         Mockito.doThrow(RuntimeException.class).when(catalogService).addNewItem(any(CatalogItemEntity.class));
@@ -105,8 +100,7 @@ public class CatalogControllerTest {
         CatalogItemEntity itemEntityOne = new CatalogItemEntity(
                 "item1",
                 12.20,
-                "category1",
-                10
+                "category1"
         );
         Mockito.doReturn(itemEntityOne).when(catalogService).getItemById(1);
         mockMvc.perform(get("/api/v1/catalog/items/1"))
@@ -119,8 +113,7 @@ public class CatalogControllerTest {
         CatalogItemEntity itemEntityOne = new CatalogItemEntity(
                 "item1",
                 12.20,
-                "category1",
-                10
+                "category1"
         );
         Mockito.doReturn(null).when(catalogService).getItemById(1);
         mockMvc.perform(get("/api/v1/catalog/items/1"))
@@ -132,8 +125,7 @@ public class CatalogControllerTest {
         CatalogItemEntity itemEntityOne = new CatalogItemEntity(
                 "item1",
                 12.20,
-                "category1",
-                10
+                "category1"
         );
         Mockito.doThrow(RuntimeException.class).when(catalogService).getItemById(1);
         mockMvc.perform(get("/api/v1/catalog/items/1"))
@@ -145,14 +137,12 @@ public class CatalogControllerTest {
         CatalogItemEntity itemEntityOne = new CatalogItemEntity(
                 "item1",
                 12.20,
-                "category1",
-                10
+                "category1"
         );
         CatalogItemEntity itemEntityTwo = new CatalogItemEntity(
                 "item2",
                 14.20,
-                "category1",
-                13
+                "category1"
         );
 
         Mockito.doReturn(Arrays.asList(itemEntityOne, itemEntityTwo))
@@ -177,15 +167,13 @@ public class CatalogControllerTest {
         CatalogItemEntity itemEntityOne = new CatalogItemEntity(
                 "item1",
                 12.20,
-                "category1",
-                10
+                "category1"
         );
         itemEntityOne.setID(1);
         CatalogDTO itemDTO = new CatalogDTO(
                 "item1",
                 12.20,
-                "category1",
-                10
+                "category1"
         );
         Mockito.doReturn(itemEntityOne).when(catalogService).updateItem(any(Integer.class), any(CatalogItemEntity.class));
         mockMvc.perform(put("/api/v1/catalog/items/1")
@@ -198,8 +186,7 @@ public class CatalogControllerTest {
         CatalogDTO itemDTO = new CatalogDTO(
                 "item1",
                 12.20,
-                "category1",
-                10
+                "category1"
         );
         Mockito.doThrow(RuntimeException.class).when(catalogService).updateItem(any(Integer.class), any(CatalogItemEntity.class));
         mockMvc.perform(put("/api/v1/catalog/items/1")

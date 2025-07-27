@@ -19,16 +19,15 @@ public class CatalogItemEntity {
     @Column(name = "category")
     private String category;
 
-    @Column(name = "available_stock")
+    @Transient
     private int availableStock;
 
     public CatalogItemEntity() {}
 
-    public CatalogItemEntity(String name, Double pricePerUnit, String category, Integer availableStock) {
+    public CatalogItemEntity(String name, Double pricePerUnit, String category) {
         this.name = name;
         this.pricePerUnit = pricePerUnit;
         this.category = category;
-        this.availableStock = availableStock;
     }
 
     public void setID(int id) {

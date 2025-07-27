@@ -20,9 +20,6 @@
             <column name="category" type="VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
-            <column name="available_stock" type="INTEGER">
-                <constraints nullable="false"/>
-            </column>
         </createTable>
     </changeSet>
 
