@@ -1,5 +1,5 @@
 com/oms/catalog/repository/CatalogRepositoryTest.class
+com/oms/catalog/webClient/InventoryServiceWebClientTest.class
 com/oms/catalog/controller/CatalogControllerTest.class
 com/oms/catalog/service/CatalogServiceTest.class
 com/oms/catalog/CatalogApplicationTests.class
-com/oms/catalog/InventoryServiceWebClientTest.class

@@ -1,7 +1,6 @@
-package com.oms.catalog;
+package com.oms.catalog.webClient;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.oms.catalog.webClient.InventoryServiceWebClient;
 import com.oms.inventory.dto.InventoryItemDTO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
