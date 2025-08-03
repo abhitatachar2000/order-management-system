@@ -1,14 +1,21 @@
 package com.oms.catalog.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.oms.catalog.entity.CatalogItemEntity;
 import com.oms.catalog.repository.CatalogRepository;
+import com.oms.catalog.webClient.InventoryServiceWebClient;
+import com.oms.inventory.dto.InventoryItemDTO;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import reactor.core.publisher.Mono;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -26,9 +33,13 @@ public class CatalogServiceTest {
 
     private CatalogService catalogService;
 
+    @MockitoBean
+    private InventoryServiceWebClient inventoryServiceWebClient;
+
+
     @BeforeEach
     void setup() {
-        this.catalogService = new CatalogService(catalogRepository);
+        this.catalogService = new CatalogService(catalogRepository, inventoryServiceWebClient);
     }
 
     @Test
@@ -39,6 +50,7 @@ public class CatalogServiceTest {
                 "category1"
         );
         Mockito.doReturn(itemOne).when(catalogRepository).save(any(CatalogItemEntity.class));
+        Mockito.doReturn(Mono.empty()).when(inventoryServiceWebClient).createInventoryEntry(any(InventoryItemDTO.class));
         Assertions.assertEquals(itemOne.getName(), catalogService.addNewItem(itemOne).getName());
     }
 
@@ -49,7 +61,19 @@ public class CatalogServiceTest {
                 12.20,
                 "category1"
         );
+        Mockito.doReturn(Mono.empty()).when(inventoryServiceWebClient).createInventoryEntry(any(InventoryItemDTO.class));
         Mockito.doThrow(RuntimeException.class).when(catalogRepository).save(any(CatalogItemEntity.class));
+        Assertions.assertThrows(RuntimeException.class, () -> {catalogService.addNewItem(itemOne);});
+    }
+
+    @Test
+    void shouldThrowExceptionIfInventoryItemCreationFails() throws Exception {
+        CatalogItemEntity itemOne = new CatalogItemEntity(
+                "item1",
+                12.20,
+                "category1"
+        );
+        Mockito.doReturn(Mono.error(new RuntimeException())).when(inventoryServiceWebClient).createInventoryEntry(any(InventoryItemDTO.class));
         Assertions.assertThrows(RuntimeException.class, () -> {catalogService.addNewItem(itemOne);});
     }
 
@@ -84,14 +108,18 @@ public class CatalogServiceTest {
     }
 
     @Test
-    void shouldFindItemWithIdWhenTheITemExists() {
+    void shouldFindItemWithIdWhenTheITemExists() throws JsonProcessingException {
         CatalogItemEntity itemEntityOne = new CatalogItemEntity(
                 "item1",
                 12.20,
                 "category1"
         );
+        itemEntityOne.setID(1);
 
+        Mockito.doReturn(itemEntityOne).when(catalogRepository).save(any(CatalogItemEntity.class));
         Mockito.doReturn(Optional.of(itemEntityOne)).when(catalogRepository).findById(1);
+        Mockito.doReturn(Mono.empty()).when(inventoryServiceWebClient).createInventoryEntry(any(InventoryItemDTO.class));
+
 
         CatalogItemEntity addedItemOne = catalogService.addNewItem(itemEntityOne);
 

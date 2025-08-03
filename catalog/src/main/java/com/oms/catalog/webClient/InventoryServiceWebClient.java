@@ -2,7 +2,7 @@ package com.oms.catalog.webClient;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.oms.inventory.entity.InventoryItemEntity;
+import com.oms.inventory.dto.InventoryItemDTO;
 import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpHeaders;
@@ -24,14 +24,14 @@ public class InventoryServiceWebClient {
         this.webClient = webClient;
     }
 
-    public Mono<Void> createInventoryEntry(InventoryItemEntity inventoryItemEntity) throws JsonProcessingException {
+    public Mono<Void> createInventoryEntry(InventoryItemDTO inventoryItemDTO) throws JsonProcessingException {
         String correlationId = MDC.get(CORRELATION_ID_HEADER);
 
         return webClient.post()
                 .uri("/api/v1/inventory/items")
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .header(CORRELATION_ID_HEADER, correlationId)
-                .bodyValue(om.writeValueAsString(inventoryItemEntity))
+                .bodyValue(om.writeValueAsString(inventoryItemDTO))
                 .retrieve()
                 .toBodilessEntity()
                 .flatMap(resp -> {
@@ -43,12 +43,12 @@ public class InventoryServiceWebClient {
                 });
     }
 
-    public Mono<InventoryItemEntity> getInventoryItemById(int id) {
+    public Mono<InventoryItemDTO> getInventoryItemById(int id) {
         String uri = String.format("/api/v1/inventory/items/%s", id);
         return webClient.get()
                 .uri(uri)
                 .header(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
-                .retrieve().toEntity(InventoryItemEntity.class)
+                .retrieve().toEntity(InventoryItemDTO.class)
                 .flatMap(resp -> {
                     if (resp.getStatusCode().is2xxSuccessful()) {
                         assert resp.getBody() != null;

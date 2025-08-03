@@ -1,7 +1,12 @@
 package com.oms.catalog.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.oms.catalog.entity.CatalogItemEntity;
 import com.oms.catalog.repository.CatalogRepository;
+import com.oms.catalog.webClient.InventoryServiceWebClient;
+import com.oms.inventory.dto.InventoryItemDTO;
+import com.oms.inventory.entity.InventoryItemEntity;
+import com.oms.inventory.service.InventoryService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,17 +20,30 @@ public class CatalogService {
     Logger logger = LoggerFactory.getLogger(CatalogService.class);
 
     private CatalogRepository catalogRepository;
+    private InventoryServiceWebClient inventoryServiceWebClient;
 
-    public CatalogService(CatalogRepository catalogRepository) {
+    public CatalogService(CatalogRepository catalogRepository, InventoryServiceWebClient inventoryServiceWebClient) {
         this.catalogRepository = catalogRepository;
+        this.inventoryServiceWebClient = inventoryServiceWebClient;
     }
 
     public CatalogItemEntity addNewItem(CatalogItemEntity item) throws RuntimeException {
+        Integer id = null;
         try {
             CatalogItemEntity returnedItem = catalogRepository.save(item);
-            logger.info("New item successfully added");
+            logger.info("New item successfully added to catalog db");
+            id = returnedItem.getId();
+            InventoryItemDTO inventoryItemDTO = new InventoryItemDTO(id, 0);
+            try {
+                inventoryServiceWebClient.createInventoryEntry(inventoryItemDTO).block();
+            } catch (Exception ex) {
+                logger.error("Error occurred while creating inventory entry", ex);
+                logger.info("Rolling back catalog item creation due to inventory error");
+                this.deleteById(id);
+                throw new RuntimeException(ex);
+            }
             return returnedItem;
-        } catch (RuntimeException e) {
+        } catch (Exception e) {
             logger.error("Adding new item failed: ");
             e.printStackTrace();
             throw e;
