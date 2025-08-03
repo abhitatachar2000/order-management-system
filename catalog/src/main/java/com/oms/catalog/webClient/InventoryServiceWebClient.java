@@ -38,7 +38,7 @@ public class InventoryServiceWebClient {
                     if (resp.getStatusCode().is2xxSuccessful()) {
                         return Mono.empty();
                     } else {
-                        return Mono.error(new RuntimeException("Unexpected response status: " + resp.getStatusCode()));
+                        return Mono.error(new RuntimeException(String.format("Error response status %s and message %s", resp.getStatusCode(), resp.getBody())));
                     }
                 });
     }
@@ -48,6 +48,14 @@ public class InventoryServiceWebClient {
         return webClient.get()
                 .uri(uri)
                 .header(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
-                .retrieve().bodyToMono(InventoryItemEntity.class);
+                .retrieve().toEntity(InventoryItemEntity.class)
+                .flatMap(resp -> {
+                    if (resp.getStatusCode().is2xxSuccessful()) {
+                        assert resp.getBody() != null;
+                        return Mono.just(resp.getBody());
+                    } else {
+                        return Mono.error(new RuntimeException(String.format("Error response status %s and message %s", resp.getStatusCode(), resp.getBody())));
+                    }
+                });
     }
 }

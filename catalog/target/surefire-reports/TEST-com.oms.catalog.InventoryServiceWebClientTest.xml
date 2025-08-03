@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report-3.0.xsd" version="3.0" name="com.oms.catalog.service.CatalogServiceTest" time="0.342" tests="14" errors="0" skipped="0" failures="0">
+<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report-3.0.xsd" version="3.0" name="com.oms.catalog.InventoryServiceWebClientTest" time="0.11" tests="4" errors="0" skipped="0" failures="0">
   <properties>
     <property name="java.specification.version" value="17"/>
     <property name="sun.jnu.encoding" value="UTF-8"/>
@@ -63,101 +63,8 @@
     <property name="CONSOLE_LOG_PATTERN" value="%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"/>
     <property name="LOGGED_APPLICATION_NAME" value="[catalog] "/>
   </properties>
-  <testcase name="shouldDeleteAllItemsByCategory" classname="com.oms.catalog.service.CatalogServiceTest" time="0.003">
-    <system-out><![CDATA[2025-08-04 00:31:22.761 [main] INFO  o.s.t.c.s.AnnotationConfigContextLoaderUtils - [] Could not detect default configuration classes for test class [com.oms.catalog.service.CatalogServiceTest]: CatalogServiceTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
-2025-08-04 00:31:22.766 [main] INFO  o.s.b.t.c.SpringBootTestContextBootstrapper - [] Found @SpringBootConfiguration com.oms.catalog.CatalogApplication for test class com.oms.catalog.service.CatalogServiceTest
-
-  .   ____          _            __ _ _
- /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
-( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
- \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
-  '  |____| .__|_| |_|_| |_\__, | / / / /
- =========|_|==============|___/=/_/_/_/
-
- :: Spring Boot ::                (v3.5.3)
-
-2025-08-04 00:31:22.781 [main] INFO  c.o.c.service.CatalogServiceTest - [] Starting CatalogServiceTest using Java 17.0.16 with PID 55118 (started by i527379 in /Users/i527379/workspace/order-management-service/catalog)
-2025-08-04 00:31:22.781 [main] INFO  c.o.c.service.CatalogServiceTest - [] No active profile set, falling back to 1 default profile: "default"
-2025-08-04 00:31:22.856 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - [] Bootstrapping Spring Data JPA repositories in DEFAULT mode.
-2025-08-04 00:31:22.862 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - [] Finished Spring Data repository scanning in 5 ms. Found 1 JPA repository interface.
-2025-08-04 00:31:22.948 [main] INFO  com.zaxxer.hikari.HikariDataSource - [] HikariPool-2 - Starting...
-2025-08-04 00:31:22.949 [main] INFO  com.zaxxer.hikari.pool.HikariPool - [] HikariPool-2 - Added connection conn10: url=jdbc:h2:mem:testdb user=SA
-2025-08-04 00:31:22.949 [main] INFO  com.zaxxer.hikari.HikariDataSource - [] HikariPool-2 - Start completed.
-2025-08-04 00:31:22.975 [main] INFO  liquibase.changelog - [] Reading from PUBLIC.DATABASECHANGELOG
-2025-08-04 00:31:22.979 [main] INFO  liquibase.ui - [] Database is up to date, no changesets to execute
-2025-08-04 00:31:22.980 [main] INFO  liquibase.changelog - [] Reading from PUBLIC.DATABASECHANGELOG
-2025-08-04 00:31:22.981 [main] INFO  liquibase.util - [] UPDATE SUMMARY
-2025-08-04 00:31:22.981 [main] INFO  liquibase.util - [] Run:                          0
-2025-08-04 00:31:22.981 [main] INFO  liquibase.util - [] Previously run:               1
-2025-08-04 00:31:22.981 [main] INFO  liquibase.util - [] Filtered out:                 0
-2025-08-04 00:31:22.981 [main] INFO  liquibase.util - [] -------------------------------
-2025-08-04 00:31:22.981 [main] INFO  liquibase.util - [] Total change sets:            1
-2025-08-04 00:31:22.981 [main] INFO  liquibase.util - [] Update summary generated
-2025-08-04 00:31:22.981 [main] INFO  liquibase.command - [] Command execution complete
-2025-08-04 00:31:22.990 [main] INFO  o.h.jpa.internal.util.LogHelper - [] HHH000204: Processing PersistenceUnitInfo [name: default]
-2025-08-04 00:31:22.991 [main] INFO  o.h.c.i.RegionFactoryInitiator - [] HHH000026: Second-level cache disabled
-2025-08-04 00:31:22.995 [main] INFO  o.s.o.j.p.SpringPersistenceUnitInfo - [] No LoadTimeWeaver setup: ignoring JPA class transformer
-2025-08-04 00:31:22.996 [main] WARN  org.hibernate.orm.deprecation - [] HHH90000025: H2Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
-2025-08-04 00:31:22.996 [main] INFO  o.hibernate.orm.connections.pooling - [] HHH10001005: Database info:
-	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-2)']
-	Database driver: undefined/unknown
-	Database version: 2.3.232
-	Autocommit mode: undefined/unknown
-	Isolation level: undefined/unknown
-	Minimum pool size: undefined/unknown
-	Maximum pool size: undefined/unknown
-2025-08-04 00:31:23.004 [main] INFO  o.h.e.t.j.p.i.JtaPlatformInitiator - [] HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
-2025-08-04 00:31:23.004 [main] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - [] Initialized JPA EntityManagerFactory for persistence unit 'default'
-2025-08-04 00:31:23.036 [main] WARN  o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration - [] spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
-2025-08-04 00:31:23.077 [main] INFO  c.o.c.service.CatalogServiceTest - [] Started CatalogServiceTest in 0.309 seconds (process running for 3.758)
-2025-08-04 00:31:23.080 [main] INFO  c.oms.catalog.service.CatalogService - [] Deleted items of category category1
-]]></system-out>
-  </testcase>
-  <testcase name="shoudlReturnNullIfNoElementWithIdExists" classname="com.oms.catalog.service.CatalogServiceTest" time="0.001">
-    <system-out><![CDATA[2025-08-04 00:31:23.082 [main] INFO  c.oms.catalog.service.CatalogService - [] Could not find item with id: 2
-]]></system-out>
-  </testcase>
-  <testcase name="shouldSaveNewItemSuccessfully" classname="com.oms.catalog.service.CatalogServiceTest" time="0.002">
-    <system-out><![CDATA[2025-08-04 00:31:23.084 [main] INFO  c.oms.catalog.service.CatalogService - [] New item successfully added
-]]></system-out>
-  </testcase>
-  <testcase name="shouldThrowExceptionWhenItemAdditionFails" classname="com.oms.catalog.service.CatalogServiceTest" time="0.001">
-    <system-out><![CDATA[2025-08-04 00:31:23.086 [main] ERROR c.oms.catalog.service.CatalogService - [] Adding new item failed: 
-]]></system-out>
-    <system-err><![CDATA[java.lang.RuntimeException
-]]></system-err>
-  </testcase>
-  <testcase name="shouldFindItemWithIdWhenTheITemExists" classname="com.oms.catalog.service.CatalogServiceTest" time="0.001">
-    <system-out><![CDATA[2025-08-04 00:31:23.088 [main] INFO  c.oms.catalog.service.CatalogService - [] New item successfully added
-2025-08-04 00:31:23.088 [main] INFO  c.oms.catalog.service.CatalogService - [] Found item with id 
-]]></system-out>
-  </testcase>
-  <testcase name="shoudReturnListOfAllExistingItems" classname="com.oms.catalog.service.CatalogServiceTest" time="0.001"/>
-  <testcase name="returnsNullWhenUpdatingIDDoesNotExist" classname="com.oms.catalog.service.CatalogServiceTest" time="0.002">
-    <system-out><![CDATA[2025-08-04 00:31:23.091 [main] INFO  c.oms.catalog.service.CatalogService - [] Could not find item with id: 1
-2025-08-04 00:31:23.091 [main] ERROR c.oms.catalog.service.CatalogService - [] Failed to update item with id 1
-]]></system-out>
-  </testcase>
-  <testcase name="shouldReturnEmptyListIfItemsOfCategoryNotFound" classname="com.oms.catalog.service.CatalogServiceTest" time="0.001"/>
-  <testcase name="shouldReturnEmptyListWhenNoItemsExistInCatelog" classname="com.oms.catalog.service.CatalogServiceTest" time="0.001"/>
-  <testcase name="shouldDeleteItemsIfExists" classname="com.oms.catalog.service.CatalogServiceTest" time="0.002">
-    <system-out><![CDATA[2025-08-04 00:31:23.095 [main] INFO  c.oms.catalog.service.CatalogService - [] Found item with id 
-2025-08-04 00:31:23.095 [main] INFO  c.oms.catalog.service.CatalogService - [] Deleted item with id: 1
-]]></system-out>
-  </testcase>
-  <testcase name="shouldNotDeleteItemsIfCategoryDoesNotExist" classname="com.oms.catalog.service.CatalogServiceTest" time="0.001">
-    <system-out><![CDATA[2025-08-04 00:31:23.096 [main] ERROR c.oms.catalog.service.CatalogService - [] Could not delete items with category: category1
-]]></system-out>
-  </testcase>
-  <testcase name="shouldNotDeleteItemIdDoesNotExist" classname="com.oms.catalog.service.CatalogServiceTest" time="0.001">
-    <system-out><![CDATA[2025-08-04 00:31:23.098 [main] INFO  c.oms.catalog.service.CatalogService - [] Could not find item with id: 1
-2025-08-04 00:31:23.098 [main] ERROR c.oms.catalog.service.CatalogService - [] No item found with id: 1
-]]></system-out>
-  </testcase>
-  <testcase name="shouldReturnListOfItemsOfAParticularCategoryIfExists" classname="com.oms.catalog.service.CatalogServiceTest" time="0.001"/>
-  <testcase name="updatesItemIfItemExists" classname="com.oms.catalog.service.CatalogServiceTest" time="0.001">
-    <system-out><![CDATA[2025-08-04 00:31:23.100 [main] INFO  c.oms.catalog.service.CatalogService - [] Found item with id 
-2025-08-04 00:31:23.100 [main] INFO  c.oms.catalog.service.CatalogService - [] Updated item with id 1
-]]></system-out>
-  </testcase>
+  <testcase name="getInventoryItemById" classname="com.oms.catalog.InventoryServiceWebClientTest" time="0.105"/>
+  <testcase name="getInventoryItemByIdFails" classname="com.oms.catalog.InventoryServiceWebClientTest" time="0.001"/>
+  <testcase name="creatingNewInventoryItemFails" classname="com.oms.catalog.InventoryServiceWebClientTest" time="0.002"/>
+  <testcase name="createsANewInventoryItemSuccessfully" classname="com.oms.catalog.InventoryServiceWebClientTest" time="0.002"/>
 </testsuite>
