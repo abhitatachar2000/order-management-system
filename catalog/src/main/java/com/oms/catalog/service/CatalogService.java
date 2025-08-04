@@ -80,6 +80,10 @@ public class CatalogService {
             logger.info(String.format("Could not find item with id: %s", id));
             return item;
         }
+        InventoryItemDTO inventoryItemDTO = inventoryServiceWebClient.getInventoryItemById(id).block();
+        if (inventoryItemDTO != null) {
+            item.setAvailableStock(inventoryItemDTO.getQuantity());
+        }
         logger.info(String.format("Found item with id ", id));
         return item;
     }

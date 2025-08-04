@@ -119,9 +119,12 @@ public class CatalogServiceTest {
         );
         itemEntityOne.setID(1);
 
+        InventoryItemDTO inventoryItemDTO = new InventoryItemDTO(1, 10);
+
         Mockito.doReturn(itemEntityOne).when(catalogRepository).save(any(CatalogItemEntity.class));
         Mockito.doReturn(Optional.of(itemEntityOne)).when(catalogRepository).findById(1);
         Mockito.doReturn(Mono.empty()).when(inventoryServiceWebClient).createInventoryEntry(any(InventoryItemDTO.class));
+        Mockito.doReturn(Mono.just(inventoryItemDTO)).when(inventoryServiceWebClient).getInventoryItemById(1);
 
 
         CatalogItemEntity addedItemOne = catalogService.addNewItem(itemEntityOne);
@@ -177,6 +180,7 @@ public class CatalogServiceTest {
                 12.20,
                 "category1"
         );
+        Mockito.doReturn(Mono.just(new InventoryItemDTO(1, 10))).when(inventoryServiceWebClient).getInventoryItemById(1);
         Mockito.doReturn(Optional.of(itemEntityOne)).when(catalogRepository).findById(1);
         Mockito.doNothing().when(catalogRepository).deleteById(1);
         Boolean itemDeleted = catalogService.deleteById(1);
@@ -220,6 +224,7 @@ public class CatalogServiceTest {
         itemEntityOne.setID(1);
         int id = 1;
         Mockito.doReturn(Optional.of(itemEntityOne)).when(catalogRepository).findById(id);
+        Mockito.doReturn(Mono.just(new InventoryItemDTO(1, 10))).when(inventoryServiceWebClient).getInventoryItemById(1);
         Mockito.doReturn(itemEntityOne).when(catalogRepository).save(any(CatalogItemEntity.class));
         CatalogItemEntity returnedItem = catalogService.updateItem(id, itemEntityOne);
         Assertions.assertEquals(id, returnedItem.getId());
