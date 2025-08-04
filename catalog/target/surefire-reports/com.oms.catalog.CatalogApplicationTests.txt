@@ -1,4 +1,4 @@
 -------------------------------------------------------------------------------
 Test set: com.oms.catalog.CatalogApplicationTests
 -------------------------------------------------------------------------------
-Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 2.258 s -- in com.oms.catalog.CatalogApplicationTests
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 2.254 s -- in com.oms.catalog.CatalogApplicationTests
