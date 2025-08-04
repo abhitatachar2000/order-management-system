@@ -102,8 +102,11 @@ public class CatalogServiceTest {
                 "category2"
         );
 
+        InventoryItemDTO inventoryItemDTO = new InventoryItemDTO(1, 10);
+
         List<CatalogItemEntity> allItems = Arrays.asList(itemOne, itemTwo, itemThree);
         Mockito.doReturn(allItems).when(catalogRepository).findAll();
+        Mockito.doReturn(Mono.just(inventoryItemDTO)).when(inventoryServiceWebClient).getInventoryItemById(any(Integer.class));
         Assertions.assertEquals(3, catalogService.getAllCatalogItems().size());
     }
 

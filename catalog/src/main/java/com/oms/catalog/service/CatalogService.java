@@ -62,7 +62,15 @@ public class CatalogService {
     }
 
     public List<CatalogItemEntity> getAllCatalogItems() {
-        return catalogRepository.findAll();
+        List<CatalogItemEntity> catalogItems = catalogRepository.findAll();
+        for(CatalogItemEntity item: catalogItems){
+            int id = item.getId();
+            InventoryItemDTO inventoryItem = inventoryServiceWebClient.getInventoryItemById(id).block();
+            if (inventoryItem != null) {
+                item.setAvailableStock(inventoryItem.getQuantity());
+            }
+        }
+        return catalogItems;
     }
 
 
