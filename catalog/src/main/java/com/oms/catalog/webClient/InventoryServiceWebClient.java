@@ -45,9 +45,11 @@ public class InventoryServiceWebClient {
 
     public Mono<InventoryItemDTO> getInventoryItemById(int id) {
         String uri = String.format("/api/v1/inventory/items/%s", id);
+        String correlationId = MDC.get(CORRELATION_ID_HEADER);
         return webClient.get()
                 .uri(uri)
                 .header(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
+                .header(CORRELATION_ID_HEADER, correlationId)
                 .retrieve().toEntity(InventoryItemDTO.class)
                 .flatMap(resp -> {
                     if (resp.getStatusCode().is2xxSuccessful()) {
