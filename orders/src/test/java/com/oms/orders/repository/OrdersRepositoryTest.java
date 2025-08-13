@@ -2,10 +2,7 @@ package com.oms.orders.repository;
 
 import com.oms.orders.entity.OrderEntity;
 import com.oms.orders.entity.OrderStatus;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.PropertySource;
@@ -36,8 +33,8 @@ public class OrdersRepositoryTest {
         OrderEntity orderEntityItem = new OrderEntity(
                 1,
                 10,
-                20,
-                200,
+                20.0d,
+                200.0d,
                 OrderStatus.NEW,
                 "test@example.com"
         );
@@ -58,8 +55,8 @@ public class OrdersRepositoryTest {
         OrderEntity orderEntityItem = new OrderEntity(
                 1,
                 10,
-                20,
-                200,
+                20.0d,
+                200.0d,
                 OrderStatus.NEW,
                 "test@example.com"
         );
@@ -73,8 +70,8 @@ public class OrdersRepositoryTest {
         OrderEntity orderEntityItem = new OrderEntity(
                 1,
                 10,
-                20,
-                200,
+                20.0d,
+                200.0d,
                 OrderStatus.NEW,
                 "test@example.com"
         );
@@ -91,16 +88,16 @@ public class OrdersRepositoryTest {
         OrderEntity orderOne = new OrderEntity(
                 1,
                 10,
-                20,
-                200,
+                20.0d,
+                200.0d,
                 OrderStatus.NEW,
                 "test@example.com"
         );
         OrderEntity orderTwo = new OrderEntity(
                 2,
                 10,
-                2,
-                20,
+                20.0d,
+                200.0d,
                 OrderStatus.NEW,
                 "test2@example.com"
         );
@@ -119,8 +116,8 @@ public class OrdersRepositoryTest {
         OrderEntity orderEntityItem = new OrderEntity(
                 1,
                 10,
-                20,
-                200,
+                20.0d,
+                200.0d,
                 OrderStatus.NEW,
                 "test@example.com"
         );
@@ -129,8 +126,8 @@ public class OrdersRepositoryTest {
         OrderEntity updatedItem = new OrderEntity(
                 1,
                 10,
-                22,
-                220,
+                22.0d,
+                220.0d,
                 OrderStatus.NEW,
                 "test@example.com"
         );
@@ -138,7 +135,55 @@ public class OrdersRepositoryTest {
         ordersRepository.save(updatedItem);
         orderEntity = ordersRepository.findAll().get(0);
         Assertions.assertNotNull(orderEntity);
-        Assertions.assertEquals(22.0d, orderEntity.getPrice_per_unit());
+        Assertions.assertEquals(22.0d, orderEntity.getPricePerUnit());
+    }
+
+    @Test
+    public void returnsAllOrdersByStatus() {
+        OrderEntity firstOrder = new OrderEntity(
+                12,
+                11,
+                100.0d,
+                1100.0d,
+                OrderStatus.NEW,
+                "testcontact@example.com"
+        );
+        OrderEntity secondOrder = new OrderEntity(
+                1,
+                10,
+                20.0d,
+                200.0d,
+                OrderStatus.NEW,
+                "newTestContact@example.com"
+        );
+        OrderEntity thirdOrder = new OrderEntity(
+                1,
+                11,
+                20.0d,
+                220.0d,
+                OrderStatus.DELIVERED,
+                "newTestContact@example.com"
+        );
+        ordersRepository.save(firstOrder);
+        ordersRepository.save(secondOrder);
+        ordersRepository.save(thirdOrder);
+        List<OrderEntity> newOrders = ordersRepository.findByStatus(OrderStatus.NEW);
+        Assertions.assertEquals(2, newOrders.size());
+    }
+
+    @Test
+    public void returnsEmptyListIfNoOrdersExistForStatus() {
+        OrderEntity deliveredOrder = new OrderEntity(
+                1,
+                11,
+                20.0d,
+                220.0d,
+                OrderStatus.DELIVERED,
+                "newTestContact@example.com"
+        );
+        ordersRepository.save(deliveredOrder);
+        List<OrderEntity> newOrders = ordersRepository.findByStatus(OrderStatus.NEW);
+        Assertions.assertTrue(newOrders.isEmpty());
     }
 }
 
