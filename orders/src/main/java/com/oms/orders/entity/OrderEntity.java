@@ -16,10 +16,10 @@ public class OrderEntity {
     private int quantity;
 
     @Column(name = "price_per_unit")
-    private double price_per_unit;
+    private double pricePerUnit;
 
     @Column(name = "total_price")
-    private double total_price;
+    private double totalPrice;
 
     @Column(name = "order_status")
     private String status;
@@ -29,11 +29,11 @@ public class OrderEntity {
 
     public OrderEntity() {}
 
-    public OrderEntity(int itemId, int quantity, int price_per_unit, int total_price, String status, String contact) {
+    public OrderEntity(int itemId, int quantity, double pricePerUnit, double totalPrice, String status, String contact) {
         this.itemId = itemId;
         this.quantity = quantity;
-        this.price_per_unit = price_per_unit;
-        this.total_price = total_price;
+        this.pricePerUnit = pricePerUnit;
+        this.totalPrice = totalPrice;
         this.status = status;
         this.contact = contact;
     }
@@ -62,20 +62,20 @@ public class OrderEntity {
         this.quantity = quantity;
     }
 
-    public double getPrice_per_unit() {
-        return price_per_unit;
+    public double getPricePerUnit() {
+        return pricePerUnit;
     }
 
-    public void setPrice_per_unit(double price_per_unit) {
-        this.price_per_unit = price_per_unit;
+    public void setPricePerUnit(double price_per_unit) {
+        this.pricePerUnit = price_per_unit;
     }
 
-    public double getTotal_price() {
-        return total_price;
+    public double getTotalPrice() {
+        return totalPrice;
     }
 
-    public void setTotal_price(double total_price) {
-        this.total_price = total_price;
+    public void setTotalPrice(double totalPrice) {
+        this.totalPrice = totalPrice;
     }
 
     public String getStatus() {
