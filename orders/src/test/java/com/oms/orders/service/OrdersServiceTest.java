@@ -49,6 +49,21 @@ public class OrdersServiceTest {
     }
 
     @Test
+    void cannotCreateOrderWithInvalidStatus() {
+        OrderEntity orderedItem = new OrderEntity(
+                12,
+                10,
+                100.0d,
+                1000.0d,
+                "invalid",
+                "testcontact@example.com"
+        );
+        Assertions.assertThrows(RuntimeException.class, ()->{
+            OrderEntity returnedOrder = ordersService.createNewOrder(orderedItem);
+        });
+    }
+
+    @Test
     void throwsRuntimeExceptionIfNewOrderCreationFails() {
         OrderEntity orderedItem = new OrderEntity(
                 12,
@@ -212,6 +227,22 @@ public class OrdersServiceTest {
         );
         OrderEntity updatedOrderReturned = ordersService.updateOrder(1, updatedOrder);
         Assertions.assertNull(updatedOrderReturned);
+    }
+
+    @Test
+    void doesNotUpdateWhenOrderIsUpdatedWithInvalidStatus() {
+        Mockito.doReturn(Optional.empty()).when(ordersRepository).findById(1);
+        OrderEntity updatedOrder = new OrderEntity(
+                12,
+                11,
+                100.0d,
+                1100.0d,
+                "invalid",
+                "testcontact@example.com"
+        );
+        Assertions.assertThrows(RuntimeException.class, () -> {
+            ordersService.updateOrder(1, updatedOrder);
+        });
     }
 
     @Test

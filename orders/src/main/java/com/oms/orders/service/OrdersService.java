@@ -23,6 +23,16 @@ public class OrdersService {
 
     public OrderEntity createNewOrder(OrderEntity orderEntity) throws RuntimeException {
        try {
+           String status = orderEntity.getStatus();
+           if (!status.equals(OrderStatus.NEW ) &&
+                   !status.equals(OrderStatus.PROCESSING) &&
+                   !status.equals(OrderStatus.SHIPPED) &&
+                   !status.equals(OrderStatus.OU_FOR_DELIVERY) &&
+                   !status.equals(OrderStatus.DELIVERED) &&
+                   !status.equals(OrderStatus.RETURN_PLACED) &&
+                   !status.equals(OrderStatus.RETURNED) ) {
+               throw new RuntimeException(String.format("Not a defined status: %s", status));
+           }
            return ordersRepository.save(orderEntity);
        } catch (Exception e) {
            logger.error("Creating new order failed. Following error occurred.");
@@ -68,6 +78,16 @@ public class OrdersService {
 
     public OrderEntity updateOrder(int id, OrderEntity updatedEntity) throws RuntimeException {
         try {
+            String status = updatedEntity.getStatus();
+            if (!status.equals(OrderStatus.NEW ) &&
+                    !status.equals(OrderStatus.PROCESSING) &&
+                    !status.equals(OrderStatus.SHIPPED) &&
+                    !status.equals(OrderStatus.OU_FOR_DELIVERY) &&
+                    !status.equals(OrderStatus.DELIVERED) &&
+                    !status.equals(OrderStatus.RETURN_PLACED) &&
+                    !status.equals(OrderStatus.RETURNED) ) {
+                throw new RuntimeException(String.format("Not a defined status: %s", status));
+            }
             OrderEntity order =  ordersRepository.findById(id).orElse(null);
             if (order == null) {
                 logger.info(String.format("Update did not happen. Could not find order with id %s", id));
