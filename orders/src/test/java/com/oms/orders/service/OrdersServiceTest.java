@@ -3,18 +3,13 @@ package com.oms.orders.service;
 import com.oms.orders.entity.OrderEntity;
 import com.oms.orders.entity.OrderStatus;
 import com.oms.orders.repository.OrdersRepository;
-import org.aspectj.weaver.ast.Or;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
-
-import javax.swing.text.html.Option;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;

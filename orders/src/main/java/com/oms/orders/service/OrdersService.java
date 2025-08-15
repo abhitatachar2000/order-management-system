@@ -5,10 +5,12 @@ import com.oms.orders.entity.OrderStatus;
 import com.oms.orders.repository.OrdersRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
+@Service
 public class OrdersService {
 
     private OrdersRepository ordersRepository;
