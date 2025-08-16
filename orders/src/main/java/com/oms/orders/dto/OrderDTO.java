@@ -23,11 +23,9 @@ public class OrderDTO {
 
     public OrderDTO() {}
 
-    public OrderDTO(int itemId, int quantity, double pricePerUnit, double totalPrice, String status, String contact) {
+    public OrderDTO(int itemId, int quantity, String status, String contact) {
         this.itemId = itemId;
         this.quantity = quantity;
-        this.pricePerUnit = pricePerUnit;
-        this.totalPrice = totalPrice;
         this.status = status;
         this.contact = contact;
     }

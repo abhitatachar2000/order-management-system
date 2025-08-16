@@ -2,9 +2,12 @@ package com.oms.orders.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.oms.catalog.dto.CatalogDTO;
+import com.oms.catalog.entity.CatalogItemEntity;
 import com.oms.orders.dto.OrderDTO;
 import com.oms.orders.entity.OrderEntity;
 import com.oms.orders.service.OrdersService;
+import com.oms.orders.webclient.CatalogServiceWebClient;
 import org.apache.coyote.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,9 +29,12 @@ public class OrdersController {
 
     private ObjectMapper objectMapper = new ObjectMapper();
 
+    private CatalogServiceWebClient catalogServiceWebClient;
+
     @Autowired
-    public OrdersController(OrdersService ordersService) {
+    public OrdersController(OrdersService ordersService, CatalogServiceWebClient catalogServiceWebClient) {
         this.ordersService = ordersService;
+        this.catalogServiceWebClient = catalogServiceWebClient;
     }
 
     @PostMapping
@@ -38,7 +44,7 @@ public class OrdersController {
             OrderEntity orderEntity = convertDtoToEntity(orderDTO);
             OrderEntity createdOrder = ordersService.createNewOrder(orderEntity);
             logger.info(String.format("Created new order with id: %s", createdOrder.getId()));
-            return ResponseEntity.status(HttpStatus.CREATED).body(createdOrder);
+            return ResponseEntity.status(HttpStatus.CREATED).body(convertEntityToDto(createdOrder));
         } catch (Exception e) {
             logger.info(String.format("Failed to create new order. Following exception occurred: %s", e.getMessage()));
             e.printStackTrace();
@@ -88,7 +94,7 @@ public class OrdersController {
                 logger.info(String.format("No order found with id %s", id));
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(String.format("Order with id %s not found", id));
             }
-            return ResponseEntity.status(HttpStatus.OK).body(updatedOrder);
+            return ResponseEntity.status(HttpStatus.OK).body(convertEntityToDto(updatedOrder));
         } catch (Exception e) {
             logger.info(String.format("Failed to create new order. Following exception occurred: %s", e.getMessage()));
             e.printStackTrace();
@@ -118,6 +124,7 @@ public class OrdersController {
         logger.info(String.format("Received request to find all orders with status \'%s\'", status));
         try {
             List<OrderEntity> orders = ordersService.findAllOrderByStatus(status);
+            List<OrderDTO> allOrdersPayload = orders.stream().map(this::convertEntityToDto).collect(Collectors.toList());
             return ResponseEntity.status(HttpStatus.OK).body(orders);
         } catch (Exception e) {
             logger.info(String.format("Failed to create new order. Following exception occurred: %s", e.getMessage()));
@@ -127,14 +134,22 @@ public class OrdersController {
     }
 
     OrderEntity convertDtoToEntity(OrderDTO orderDTO) {
-        return new OrderEntity(
-                orderDTO.getItemId(),
-                orderDTO.getQuantity(),
-                orderDTO.getPricePerUnit(),
-                orderDTO.getTotalPrice(),
-                orderDTO.getStatus(),
-                orderDTO.getContact()
-        );
+        try {
+            CatalogDTO catalogItem = catalogServiceWebClient.getCatalogItem(orderDTO.getItemId()).block();
+            double pricePerUnit = catalogItem.getPricePerUnit();
+            double totalPrice = orderDTO.getQuantity() * pricePerUnit;
+            return new OrderEntity(
+                    orderDTO.getItemId(),
+                    orderDTO.getQuantity(),
+                    pricePerUnit,
+                    totalPrice,
+                    orderDTO.getStatus(),
+                    orderDTO.getContact()
+            );
+        } catch (Exception e) {
+            throw new RuntimeException(String.format("Could not convert DTO to Entity. Following error occurred: %s", e.getMessage()));
+        }
+
     }
 
 
@@ -142,12 +157,12 @@ public class OrdersController {
         OrderDTO orderDTO = new OrderDTO(
                 orderEntity.getItemId(),
                 orderEntity.getQuantity(),
-                orderEntity.getPricePerUnit(),
-                orderEntity.getTotalPrice(),
                 orderEntity.getStatus(),
                 orderEntity.getContact()
         );
         orderDTO.setId(orderEntity.getId());
+        orderDTO.setPricePerUnit(orderEntity.getPricePerUnit());
+        orderDTO.setTotalPrice(orderDTO.getTotalPrice());
         return orderDTO;
     }
 }

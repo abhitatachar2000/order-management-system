@@ -1,5 +1,6 @@
 package com.oms.orders.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.oms.inventory.dto.InventoryItemDTO;
 import com.oms.orders.entity.OrderEntity;
@@ -43,7 +44,7 @@ public class OrdersService {
         }
     }
 
-    private void updateStock(OrderEntity updatedOrder) {
+    private void updateStock(OrderEntity updatedOrder) throws Exception {
         try {
             int itemID = updatedOrder.getItemId();
             int previousStock = inventoryServiceWebClient.getInventoryItemById(itemID).block().getQuantity();
@@ -52,28 +53,41 @@ public class OrdersService {
             InventoryItemDTO updatedOrderDTO = new InventoryItemDTO(itemID, newStock);
             inventoryServiceWebClient.updateInventoryAfterOperation(updatedOrderDTO).block();
         } catch (Exception e) {
+            logger.error(String.format("Order created but updating stock failed. Manually update the stock. Last Order: %s", objectMapper.writeValueAsString(updatedOrder)));
             e.printStackTrace();
+            throw new RuntimeException(String.format("Order created but updating stock failed. Following error occurred: %s", e.getMessage()));
+        }
+    }
+
+    private boolean isOrderStatusValid(String status) {
+        return status.equals(OrderStatus.NEW) &&
+                !status.equals(OrderStatus.PROCESSING) &&
+                !status.equals(OrderStatus.SHIPPED) &&
+                !status.equals(OrderStatus.OU_FOR_DELIVERY) &&
+                !status.equals(OrderStatus.DELIVERED) &&
+                !status.equals(OrderStatus.RETURN_PLACED) &&
+                !status.equals(OrderStatus.RETURNED);
+    }
+
+    private void checkOrderValidity(OrderEntity orderEntity) throws RuntimeException {
+        String status = orderEntity.getStatus();
+        if (!isOrderStatusValid(status)) {
+            throw new RuntimeException(String.format("Not a defined status: %s", status));
+        }
+        if (orderEntity.getQuantity() <= 0) {
+            throw new RuntimeException("Order quantity should be at least 1");
+        }
+        if (!isItemInStock(orderEntity.getItemId(), orderEntity.getQuantity())) {
+            throw new RuntimeException(String.format("Item with id %s not in stock", orderEntity.getItemId()));
         }
     }
 
     public OrderEntity createNewOrder(OrderEntity orderEntity) throws RuntimeException {
        try {
-           String status = orderEntity.getStatus();
-           if (!status.equals(OrderStatus.NEW ) &&
-                   !status.equals(OrderStatus.PROCESSING) &&
-                   !status.equals(OrderStatus.SHIPPED) &&
-                   !status.equals(OrderStatus.OU_FOR_DELIVERY) &&
-                   !status.equals(OrderStatus.DELIVERED) &&
-                   !status.equals(OrderStatus.RETURN_PLACED) &&
-                   !status.equals(OrderStatus.RETURNED) ) {
-               throw new RuntimeException(String.format("Not a defined status: %s", status));
-           }
-           if (!isItemInStock(orderEntity.getItemId(), orderEntity.getQuantity())) {
-               throw new RuntimeException(String.format("Item with id %s not in stock", orderEntity.getId()));
-           }
-           OrderEntity updatedOrder = ordersRepository.save(orderEntity);
-           updateStock(updatedOrder);
-           return updatedOrder;
+           checkOrderValidity(orderEntity);
+           OrderEntity createdOrder = ordersRepository.save(orderEntity);
+           updateStock(createdOrder);
+           return createdOrder;
        } catch (Exception e) {
            logger.error("Creating new order failed. Following error occurred.");
            e.printStackTrace();
@@ -119,13 +133,7 @@ public class OrdersService {
     public OrderEntity updateOrder(int id, OrderEntity updatedEntity) throws RuntimeException {
         try {
             String status = updatedEntity.getStatus();
-            if (!status.equals(OrderStatus.NEW ) &&
-                    !status.equals(OrderStatus.PROCESSING) &&
-                    !status.equals(OrderStatus.SHIPPED) &&
-                    !status.equals(OrderStatus.OU_FOR_DELIVERY) &&
-                    !status.equals(OrderStatus.DELIVERED) &&
-                    !status.equals(OrderStatus.RETURN_PLACED) &&
-                    !status.equals(OrderStatus.RETURNED) ) {
+            if (!isOrderStatusValid(status)) {
                 throw new RuntimeException(String.format("Not a defined status: %s", status));
             }
             OrderEntity order =  ordersRepository.findById(id).orElse(null);
@@ -145,13 +153,7 @@ public class OrdersService {
 
     public List<OrderEntity> findAllOrderByStatus(String status) {
         try {
-            if (!status.equals(OrderStatus.NEW ) &&
-                    !status.equals(OrderStatus.PROCESSING) &&
-                    !status.equals(OrderStatus.SHIPPED) &&
-                    !status.equals(OrderStatus.OU_FOR_DELIVERY) &&
-                    !status.equals(OrderStatus.DELIVERED) &&
-                    !status.equals(OrderStatus.RETURN_PLACED) &&
-                    !status.equals(OrderStatus.RETURNED) ) {
+            if (!isOrderStatusValid(status)) {
                 throw new RuntimeException(String.format("Not a defined status: %s", status));
             }
             List<OrderEntity> orders = ordersRepository.findByStatus(status);
