@@ -43,8 +43,6 @@ public class OrdersControllerTest {
     void return201OnNewOrderCreation() throws Exception {
         OrderDTO orderDTO = new OrderDTO(1,
                 10,
-                20d,
-                200d,
                 OrderStatus.NEW,
                 "test@example.com");
 
@@ -66,8 +64,6 @@ public class OrdersControllerTest {
     void returnInternalServerErrorIfAddingNewOrderFails() throws Exception {
         OrderDTO orderDTO = new OrderDTO(1,
                 10,
-                20d,
-                200d,
                 OrderStatus.NEW,
                 "test@example.com");
 
@@ -143,8 +139,6 @@ public class OrdersControllerTest {
     void sucessfullyUpdatesTheExistingOrder() throws Exception {
         OrderDTO orderDTO = new OrderDTO(1,
                 10,
-                20d,
-                200d,
                 OrderStatus.NEW,
                 "test@example.com");
 
@@ -169,8 +163,6 @@ public class OrdersControllerTest {
     void returnsNotFoundIfOrderWithIdDoesNotExist() throws Exception {
         OrderDTO orderDTO = new OrderDTO(1,
                 10,
-                20d,
-                200d,
                 OrderStatus.NEW,
                 "test@example.com");
         Mockito.doReturn(null).when(ordersService).updateOrder(eq(1), any(OrderEntity.class));
@@ -183,8 +175,6 @@ public class OrdersControllerTest {
     void throwsInternalServerErrorIfUpdatingOrderFails() throws Exception {
         OrderDTO orderDTO = new OrderDTO(1,
                 10,
-                20d,
-                200d,
                 OrderStatus.NEW,
                 "test@example.com");
         Mockito.doThrow(RuntimeException.class).when(ordersService).updateOrder(eq(1), any(OrderEntity.class));

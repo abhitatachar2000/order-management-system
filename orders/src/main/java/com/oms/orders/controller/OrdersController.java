@@ -88,7 +88,7 @@ public class OrdersController {
                 logger.info(String.format("No order found with id %s", id));
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(String.format("Order with id %s not found", id));
             }
-            return ResponseEntity.status(HttpStatus.OK).body(updatedOrder);
+            return ResponseEntity.status(HttpStatus.OK).body(convertEntityToDto(updatedOrder));
         } catch (Exception e) {
             logger.info(String.format("Failed to create new order. Following exception occurred: %s", e.getMessage()));
             e.printStackTrace();
@@ -118,6 +118,7 @@ public class OrdersController {
         logger.info(String.format("Received request to find all orders with status \'%s\'", status));
         try {
             List<OrderEntity> orders = ordersService.findAllOrderByStatus(status);
+            List<OrderDTO> allOrdersPayload = orders.stream().map(this::convertEntityToDto).collect(Collectors.toList());
             return ResponseEntity.status(HttpStatus.OK).body(orders);
         } catch (Exception e) {
             logger.info(String.format("Failed to create new order. Following exception occurred: %s", e.getMessage()));
@@ -142,12 +143,12 @@ public class OrdersController {
         OrderDTO orderDTO = new OrderDTO(
                 orderEntity.getItemId(),
                 orderEntity.getQuantity(),
-                orderEntity.getPricePerUnit(),
-                orderEntity.getTotalPrice(),
                 orderEntity.getStatus(),
                 orderEntity.getContact()
         );
         orderDTO.setId(orderEntity.getId());
+        orderDTO.setPricePerUnit(orderEntity.getPricePerUnit());
+        orderDTO.setTotalPrice(orderDTO.getTotalPrice());
         return orderDTO;
     }
 }
