@@ -1,10 +1,14 @@
 package com.oms.orders.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.oms.inventory.dto.InventoryItemDTO;
 import com.oms.orders.entity.OrderEntity;
 import com.oms.orders.entity.OrderStatus;
 import com.oms.orders.repository.OrdersRepository;
+import com.oms.orders.webclient.InventoryServiceWebClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,8 +21,39 @@ public class OrdersService {
 
     private Logger logger = LoggerFactory.getLogger(getClass());
 
-    public OrdersService(OrdersRepository ordersRepository) {
+    private InventoryServiceWebClient inventoryServiceWebClient;
+
+    private ObjectMapper objectMapper = new ObjectMapper();
+
+    public OrdersService(OrdersRepository ordersRepository, InventoryServiceWebClient inventoryServiceWebClient) {
         this.ordersRepository = ordersRepository;
+        this.inventoryServiceWebClient = inventoryServiceWebClient;
+    }
+
+    private Boolean isItemInStock(int itemId, int orderQuantity) {
+        InventoryItemDTO inventoryItemDTO = inventoryServiceWebClient.getInventoryItemById(itemId).block();
+        try {
+            if (inventoryItemDTO.getQuantity() < orderQuantity) {
+                return false;
+            }
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    private void updateStock(OrderEntity updatedOrder) {
+        try {
+            int itemID = updatedOrder.getItemId();
+            int previousStock = inventoryServiceWebClient.getInventoryItemById(itemID).block().getQuantity();
+            int orderedQuantity = updatedOrder.getQuantity();
+            int newStock = previousStock - orderedQuantity;
+            InventoryItemDTO updatedOrderDTO = new InventoryItemDTO(itemID, newStock);
+            inventoryServiceWebClient.updateInventoryAfterOperation(updatedOrderDTO).block();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public OrderEntity createNewOrder(OrderEntity orderEntity) throws RuntimeException {
@@ -33,7 +68,12 @@ public class OrdersService {
                    !status.equals(OrderStatus.RETURNED) ) {
                throw new RuntimeException(String.format("Not a defined status: %s", status));
            }
-           return ordersRepository.save(orderEntity);
+           if (!isItemInStock(orderEntity.getItemId(), orderEntity.getQuantity())) {
+               throw new RuntimeException(String.format("Item with id %s not in stock", orderEntity.getId()));
+           }
+           OrderEntity updatedOrder = ordersRepository.save(orderEntity);
+           updateStock(updatedOrder);
+           return updatedOrder;
        } catch (Exception e) {
            logger.error("Creating new order failed. Following error occurred.");
            e.printStackTrace();

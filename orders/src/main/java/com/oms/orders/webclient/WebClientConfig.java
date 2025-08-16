@@ -11,7 +11,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 public class WebClientConfig {
 
     @Bean
-    @Qualifier("inventoryService")
+    @Qualifier("inventoryServiceForOrders")
     public WebClient webClient(WebClient.Builder builder) {
         return builder.baseUrl("http://localhost:8081")
                 .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
