@@ -12,8 +12,16 @@ public class WebClientConfig {
 
     @Bean
     @Qualifier("inventoryServiceForOrders")
-    public WebClient webClient(WebClient.Builder builder) {
+    public WebClient inventoryServiceWebclient(WebClient.Builder builder) {
         return builder.baseUrl("http://localhost:8081")
+                .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .build();
+    }
+
+    @Bean
+    @Qualifier("catalogServiceForOrders")
+    public WebClient catalogServiceWebclient(WebClient.Builder builder) {
+        return builder.baseUrl("http://localhost:8080")
                 .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .build();
     }

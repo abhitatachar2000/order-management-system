@@ -2,10 +2,12 @@ package com.oms.orders.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.oms.catalog.dto.CatalogDTO;
 import com.oms.orders.dto.OrderDTO;
 import com.oms.orders.entity.OrderEntity;
 import com.oms.orders.entity.OrderStatus;
 import com.oms.orders.service.OrdersService;
+import com.oms.orders.webclient.CatalogServiceWebClient;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -17,6 +19,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
+import reactor.core.publisher.Mono;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -39,12 +42,17 @@ public class OrdersControllerTest {
     @MockitoBean
     private OrdersService ordersService;
 
+    @MockitoBean
+    private CatalogServiceWebClient catalogServiceWebClient;
+
     @Test
     void return201OnNewOrderCreation() throws Exception {
         OrderDTO orderDTO = new OrderDTO(1,
                 10,
                 OrderStatus.NEW,
                 "test@example.com");
+
+        CatalogDTO catalogDTO = new CatalogDTO("someProduct", 20d, "Category2");
 
         OrderEntity orderEntity = new OrderEntity(1,
                 10,
@@ -54,6 +62,7 @@ public class OrdersControllerTest {
                 "test@example.com");
         orderEntity.setId(1);
 
+        Mockito.doReturn(Mono.just(catalogDTO)).when(catalogServiceWebClient).getCatalogItem(1);
         Mockito.doReturn(orderEntity).when(ordersService).createNewOrder(any(OrderEntity.class));
         String jsonString = objectMapper.writeValueAsString(orderDTO);
         mockMvc.perform(post("/api/v1/orders").contentType(MediaType.APPLICATION_JSON).content(jsonString))
@@ -142,20 +151,27 @@ public class OrdersControllerTest {
                 OrderStatus.NEW,
                 "test@example.com");
 
+        CatalogDTO catalogDTO = new CatalogDTO(
+                "item",
+                20d,
+                "category1"
+        );
+
         OrderEntity orderEntity = new OrderEntity(1,
                 10,
                 20d,
                 200d,
-                OrderStatus.NEW,
+                OrderStatus.DELIVERED,
                 "test@example.com");
         orderEntity.setId(1);
 
+        Mockito.doReturn(Mono.just(catalogDTO)).when(catalogServiceWebClient).getCatalogItem(1);
         Mockito.doReturn(orderEntity).when(ordersService).updateOrder(eq(1), any(OrderEntity.class));
         mockMvc.perform(put("/api/v1/orders/1").contentType(MediaType.APPLICATION_JSON)
                     .content(objectMapper.writeValueAsString(orderDTO)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.itemId").value(1))
-                .andExpect(jsonPath("$.quantity").value(10));
+                .andExpect(jsonPath("$.status").value(OrderStatus.DELIVERED));
 
     }
 
@@ -165,6 +181,12 @@ public class OrdersControllerTest {
                 10,
                 OrderStatus.NEW,
                 "test@example.com");
+        CatalogDTO catalogDTO = new CatalogDTO(
+                "item",
+                20d,
+                "category1"
+        );
+        Mockito.doReturn(Mono.just(catalogDTO)).when(catalogServiceWebClient).getCatalogItem(1);
         Mockito.doReturn(null).when(ordersService).updateOrder(eq(1), any(OrderEntity.class));
         mockMvc.perform(put("/api/v1/orders/1").contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(orderDTO)))

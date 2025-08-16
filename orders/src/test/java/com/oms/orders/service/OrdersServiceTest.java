@@ -1,5 +1,6 @@
 package com.oms.orders.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.oms.inventory.dto.InventoryItemDTO;
 import com.oms.orders.entity.OrderEntity;
 import com.oms.orders.entity.OrderStatus;
@@ -40,7 +41,7 @@ public class OrdersServiceTest {
     }
 
     @Test
-    void createsNewOrderSuccessfully() {
+    void createsNewOrderSuccessfully() throws JsonProcessingException {
         OrderEntity orderedItem = new OrderEntity(
                 12,
                 10,
@@ -53,6 +54,7 @@ public class OrdersServiceTest {
         orderedItem.setId(1);
         Mockito.doReturn(Mono.just(inventoryItemDTO)).when(inventoryServiceWebClient).getInventoryItemById(12);
         Mockito.doReturn(orderedItem).when(ordersRepository).save(any(OrderEntity.class));
+        Mockito.doReturn(Mono.empty()).when(inventoryServiceWebClient).updateInventoryAfterOperation(any(InventoryItemDTO.class));
         OrderEntity returnedOrder = ordersService.createNewOrder(orderedItem);
         Assertions.assertNotNull(returnedOrder);
         Assertions.assertEquals(1, returnedOrder.getId());
@@ -87,6 +89,25 @@ public class OrdersServiceTest {
         Assertions.assertThrows(RuntimeException.class, ()->{
             OrderEntity returnedOrder = ordersService.createNewOrder(orderedItem);
         });
+    }
+
+    @Test
+    void doesNotCreateOrderWhenItemNotInStock() {
+        OrderEntity orderedItem = new OrderEntity(
+                12,
+                10,
+                100.0d,
+                1000.0d,
+                OrderStatus.NEW,
+                "testcontact@example.com"
+        );
+        InventoryItemDTO inventoryItemDTO = new InventoryItemDTO(12, 5);
+        orderedItem.setId(1);
+        Mockito.doReturn(Mono.just(inventoryItemDTO)).when(inventoryServiceWebClient).getInventoryItemById(12);
+        Assertions.assertThrows(RuntimeException.class, ()->{
+            OrderEntity returnedOrder = ordersService.createNewOrder(orderedItem);
+        });
+
     }
 
     // get all orders
