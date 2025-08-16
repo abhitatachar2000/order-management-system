@@ -1,8 +1,10 @@
 package com.oms.orders.service;
 
+import com.oms.inventory.dto.InventoryItemDTO;
 import com.oms.orders.entity.OrderEntity;
 import com.oms.orders.entity.OrderStatus;
 import com.oms.orders.repository.OrdersRepository;
+import com.oms.orders.webclient.InventoryServiceWebClient;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -10,6 +12,9 @@ import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -24,11 +29,14 @@ public class OrdersServiceTest {
     @MockitoBean
     private OrdersRepository ordersRepository;
 
+    @MockitoBean
+    private InventoryServiceWebClient inventoryServiceWebClient;
+
     private OrdersService ordersService;
 
     @BeforeEach
     void setup() {
-        ordersService = new OrdersService(ordersRepository);
+        ordersService = new OrdersService(ordersRepository, inventoryServiceWebClient);
     }
 
     @Test
@@ -41,7 +49,9 @@ public class OrdersServiceTest {
                 OrderStatus.NEW,
                 "testcontact@example.com"
         );
+        InventoryItemDTO inventoryItemDTO = new InventoryItemDTO(12, 20);
         orderedItem.setId(1);
+        Mockito.doReturn(Mono.just(inventoryItemDTO)).when(inventoryServiceWebClient).getInventoryItemById(12);
         Mockito.doReturn(orderedItem).when(ordersRepository).save(any(OrderEntity.class));
         OrderEntity returnedOrder = ordersService.createNewOrder(orderedItem);
         Assertions.assertNotNull(returnedOrder);

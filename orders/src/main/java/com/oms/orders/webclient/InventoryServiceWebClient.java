@@ -40,7 +40,8 @@ public class InventoryServiceWebClient {
     public Mono<Void> updateInventoryAfterOperation(InventoryItemDTO inventoryItemDTO) throws JsonProcessingException {
         String uri = "/api/v1/inventory/items";
         String correlationID = MDC.get(CORRELATION_ID_HEADER);
-        return webClient.put()
+
+        return webClient.patch()
                 .uri(uri)
                 .header(CORRELATION_ID_HEADER, correlationID)
                 .bodyValue(om.writeValueAsString(inventoryItemDTO))
@@ -50,7 +51,9 @@ public class InventoryServiceWebClient {
                     if (response.getStatusCode().is2xxSuccessful()) {
                         return Mono.empty();
                     } else {
-                        return Mono.error(new RuntimeException(String.format("Error occurred. Response status is %s and message %s", response.getStatusCode(), response.getBody())));
+                        return Mono.error(new RuntimeException(
+                                String.format("Error occurred. Response status is %s", response.getStatusCode())
+                        ));
                     }
                 });
     }

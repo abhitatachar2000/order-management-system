@@ -71,7 +71,7 @@ public class InventoryServiceWebClientTest {
 
     @Test
     void updatesInventoryAfterOperation() throws JsonProcessingException {
-        Mockito.doReturn(requestBodyUriSpec).when(webClient).put();
+        Mockito.doReturn(requestBodyUriSpec).when(webClient).patch();
         Mockito.doReturn(requestBodySpec).when(requestBodyUriSpec).uri("/api/v1/inventory/items");
         Mockito.doReturn(requestBodySpec).when(requestBodySpec).header(Mockito.anyString(), Mockito.anyString());
         Mockito.doReturn(requestHeadersSpec).when(requestBodySpec).bodyValue(Mockito.anyString());
@@ -82,7 +82,7 @@ public class InventoryServiceWebClientTest {
 
     @Test
     void failsToUpdateInventoryAfterOperation() throws JsonProcessingException {
-        Mockito.doReturn(requestBodyUriSpec).when(webClient).put();
+        Mockito.doReturn(requestBodyUriSpec).when(webClient).patch();
         Mockito.doReturn(requestBodySpec).when(requestBodyUriSpec).uri("/api/v1/inventory/items");
         Mockito.doReturn(requestBodySpec).when(requestBodySpec).header(Mockito.anyString(), Mockito.anyString());
         Mockito.doReturn(requestHeadersSpec).when(requestBodySpec).bodyValue(Mockito.anyString());
