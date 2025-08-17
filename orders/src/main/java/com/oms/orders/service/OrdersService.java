@@ -143,12 +143,14 @@ public class OrdersService {
             logger.info(String.format("Update did not happen. Could not find order with id %s", updatedEntity.getId()));
             return false;
         }
-        if (!(updatedEntity.getItemId() == existingOrder.getItemId() &&
-            updatedEntity.getQuantity() == existingOrder.getQuantity() &&
-            updatedEntity.getPricePerUnit() == existingOrder.getPricePerUnit() &&
-            updatedEntity.getTotalPrice() == existingOrder.getTotalPrice() &&
-            updatedEntity.getContact() == existingOrder.getContact() &&
-            updatedEntity.getStatus() != existingOrder.getStatus())) {
+        boolean sameItemId = updatedEntity.getItemId() == existingOrder.getItemId();
+        boolean sameQuantity = updatedEntity.getQuantity() == existingOrder.getQuantity();
+        boolean samePricePerUnit = Double.compare(updatedEntity.getPricePerUnit(), existingOrder.getPricePerUnit()) == 0;
+        boolean sameTotalPrice = Math.abs(updatedEntity.getTotalPrice() - existingOrder.getTotalPrice()) < 0.0001;
+        boolean sameContact = updatedEntity.getContact().equals(existingOrder.getContact());
+        boolean statusChanged = !updatedEntity.getStatus().equals(existingOrder.getStatus());
+
+        if (!(sameItemId && sameQuantity && samePricePerUnit && sameTotalPrice && sameContact && statusChanged)) {
             throw new RuntimeException("Cannot update order. Only order status change is supported for update.");
         }
         if (!isOrderStatusValid(updatedEntity.getStatus())) {
@@ -164,7 +166,7 @@ public class OrdersService {
                 return null;
             }
             OrderEntity updatedOrder = ordersRepository.save(entityToUpdate);
-            if (updatedOrder.getStatus() == OrderStatus.RETURNED) {
+            if (updatedOrder.getStatus().equals(OrderStatus.RETURNED)) {
                 updateStock(updatedOrder, "a");
             }
             return updatedOrder;
