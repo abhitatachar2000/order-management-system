@@ -84,6 +84,7 @@ public class OrdersService {
 
     public OrderEntity createNewOrder(OrderEntity orderEntity) throws RuntimeException {
        try {
+           orderEntity.setStatus(OrderStatus.NEW); // new orders are always in NEW state.
            checkOrderValidity(orderEntity);
            OrderEntity createdOrder = ordersRepository.save(orderEntity);
            updateStock(createdOrder);

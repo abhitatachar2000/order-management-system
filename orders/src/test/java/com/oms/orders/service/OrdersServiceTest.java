@@ -47,7 +47,7 @@ public class OrdersServiceTest {
                 10,
                 100.0d,
                 1000.0d,
-                OrderStatus.NEW,
+                OrderStatus.DELIVERED,
                 "testcontact@example.com"
         );
         InventoryItemDTO inventoryItemDTO = new InventoryItemDTO(12, 20);
@@ -58,6 +58,7 @@ public class OrdersServiceTest {
         OrderEntity returnedOrder = ordersService.createNewOrder(orderedItem);
         Assertions.assertNotNull(returnedOrder);
         Assertions.assertEquals(1, returnedOrder.getId());
+        Assertions.assertEquals(OrderStatus.NEW, returnedOrder.getStatus());
     }
 
     @Test
