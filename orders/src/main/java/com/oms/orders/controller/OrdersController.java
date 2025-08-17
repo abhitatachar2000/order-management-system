@@ -136,8 +136,9 @@ public class OrdersController {
     OrderEntity convertDtoToEntity(OrderDTO orderDTO) {
         try {
             CatalogDTO catalogItem = catalogServiceWebClient.getCatalogItem(orderDTO.getItemId()).block();
+            int orderQuantity = orderDTO.getQuantity();
             double pricePerUnit = catalogItem.getPricePerUnit();
-            double totalPrice = orderDTO.getQuantity() * pricePerUnit;
+            double totalPrice = orderQuantity * pricePerUnit;
             return new OrderEntity(
                     orderDTO.getItemId(),
                     orderDTO.getQuantity(),
@@ -162,7 +163,7 @@ public class OrdersController {
         );
         orderDTO.setId(orderEntity.getId());
         orderDTO.setPricePerUnit(orderEntity.getPricePerUnit());
-        orderDTO.setTotalPrice(orderDTO.getTotalPrice());
+        orderDTO.setTotalPrice(orderEntity.getTotalPrice());
         return orderDTO;
     }
 }

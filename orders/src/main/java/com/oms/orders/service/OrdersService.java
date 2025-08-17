@@ -60,13 +60,13 @@ public class OrdersService {
     }
 
     private boolean isOrderStatusValid(String status) {
-        return status.equals(OrderStatus.NEW) &&
-                !status.equals(OrderStatus.PROCESSING) &&
-                !status.equals(OrderStatus.SHIPPED) &&
-                !status.equals(OrderStatus.OU_FOR_DELIVERY) &&
-                !status.equals(OrderStatus.DELIVERED) &&
-                !status.equals(OrderStatus.RETURN_PLACED) &&
-                !status.equals(OrderStatus.RETURNED);
+        return status.equals(OrderStatus.NEW) ||
+                status.equals(OrderStatus.PROCESSING) ||
+                status.equals(OrderStatus.SHIPPED) ||
+                status.equals(OrderStatus.OU_FOR_DELIVERY) ||
+                status.equals(OrderStatus.DELIVERED) ||
+                status.equals(OrderStatus.RETURN_PLACED) ||
+                status.equals(OrderStatus.RETURNED);
     }
 
     private void checkOrderValidity(OrderEntity orderEntity) throws RuntimeException {
