@@ -11,4 +11,4 @@ The modules are as follows:
 
 Together, these modules ensure seamless interactions and accurate processing of orders, making the system reliable and scalable for e-commerce applications.
 
-![OMS Overview](./docs/images/oms-overview-block-diagram.png)
+![OMS Overview](./docs/images/oms-overview-block-diagram-updated.png)
