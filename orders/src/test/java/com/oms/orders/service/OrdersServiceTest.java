@@ -219,7 +219,35 @@ public class OrdersServiceTest {
     }
 
     @Test
-    void updatesOrderIfOrderWithIdExists() {
+    void updatesOrderIfOrderExistsAndOnlyStatusChanges() {
+        OrderEntity orderedItem = new OrderEntity(
+                12,
+                10,
+                100.0d,
+                1000.0d,
+                OrderStatus.NEW,
+                "testcontact@example.com"
+        );
+        orderedItem.setId(1);
+        Mockito.doReturn(Optional.of(orderedItem)).when(ordersRepository).findById(1);
+        OrderEntity updatedOrder = new OrderEntity(
+                12,
+                10,
+                100.0d,
+                1000.0d,
+                OrderStatus.SHIPPED,
+                "testcontact@example.com"
+        );
+        updatedOrder.setId(1);
+        Mockito.doReturn(updatedOrder).when(ordersRepository).save(any(OrderEntity.class));
+
+        OrderEntity updatedOrderReturned = ordersService.updateOrder(1, updatedOrder);
+        Assertions.assertEquals(1, updatedOrderReturned.getId());
+        Assertions.assertEquals(OrderStatus.SHIPPED, updatedOrderReturned.getStatus());
+    }
+
+    @Test
+    void doesNotUpdateOrderIfAnythingElseChangesOtherThanStatus() {
         OrderEntity orderedItem = new OrderEntity(
                 12,
                 10,
@@ -239,12 +267,64 @@ public class OrdersServiceTest {
                 "testcontact@example.com"
         );
         updatedOrder.setId(1);
-        Mockito.doReturn(updatedOrder).when(ordersRepository).save(any(OrderEntity.class));
-
-        OrderEntity updatedOrderReturned = ordersService.updateOrder(1, updatedOrder);
-        Assertions.assertEquals(1, updatedOrderReturned.getId());
-        Assertions.assertEquals(1100d, updatedOrderReturned.getTotalPrice());
+        Assertions.assertThrows(RuntimeException.class, () -> {
+            ordersService.updateOrder(1, updatedOrder);
+        });
     }
+
+    @Test
+    void doesNotUpdateIfOrderStatusDoesNotChange() {
+        OrderEntity orderedItem = new OrderEntity(
+                12,
+                10,
+                100.0d,
+                1000.0d,
+                OrderStatus.NEW,
+                "testcontact@example.com"
+        );
+        orderedItem.setId(1);
+        Mockito.doReturn(Optional.of(orderedItem)).when(ordersRepository).findById(1);
+        OrderEntity updatedOrder = new OrderEntity(
+                12,
+                10,
+                100.0d,
+                1000.00d,
+                OrderStatus.NEW,
+                "testcontact@example.com"
+        );
+        updatedOrder.setId(1);
+        Assertions.assertThrows(RuntimeException.class, () -> {
+            ordersService.updateOrder(1, updatedOrder);
+        });
+    }
+
+    @Test
+    void doesNotUpdateForInvalidOrderStatus() {
+        OrderEntity orderedItem = new OrderEntity(
+                12,
+                10,
+                100.0d,
+                1000.0d,
+                OrderStatus.NEW,
+                "testcontact@example.com"
+        );
+        orderedItem.setId(1);
+        Mockito.doReturn(Optional.of(orderedItem)).when(ordersRepository).findById(1);
+        OrderEntity updatedOrder = new OrderEntity(
+                12,
+                10,
+                100.0d,
+                1000.00d,
+                "invalid",
+                "testcontact@example.com"
+        );
+        updatedOrder.setId(1);
+        Assertions.assertThrows(RuntimeException.class, () -> {
+            ordersService.updateOrder(1, updatedOrder);
+        });
+    }
+
+
 
     @Test
     void doesNotUpdateWhenOrderWithIdDoesNotExist() {
@@ -262,22 +342,6 @@ public class OrdersServiceTest {
     }
 
     @Test
-    void doesNotUpdateWhenOrderIsUpdatedWithInvalidStatus() {
-        Mockito.doReturn(Optional.empty()).when(ordersRepository).findById(1);
-        OrderEntity updatedOrder = new OrderEntity(
-                12,
-                11,
-                100.0d,
-                1100.0d,
-                "invalid",
-                "testcontact@example.com"
-        );
-        Assertions.assertThrows(RuntimeException.class, () -> {
-            ordersService.updateOrder(1, updatedOrder);
-        });
-    }
-
-    @Test
     void throwsExceptionIfUpdatingOrderFails() {
         OrderEntity orderedItem = new OrderEntity(
                 12,
@@ -287,11 +351,19 @@ public class OrdersServiceTest {
                 OrderStatus.NEW,
                 "testcontact@example.com"
         );
+        OrderEntity updatedOrder = new OrderEntity(
+                12,
+                10,
+                100.0d,
+                1000.0d,
+                OrderStatus.SHIPPED,
+                "testcontact@example.com"
+        );
         orderedItem.setId(1);
         Mockito.doReturn(Optional.of(orderedItem)).when(ordersRepository).findById(1);
         Mockito.doThrow(RuntimeException.class).when(ordersRepository).save(any(OrderEntity.class));
         Assertions.assertThrows(RuntimeException.class, () -> {
-            ordersService.updateOrder(1, orderedItem);
+            ordersService.updateOrder(1, updatedOrder);
         });
     }
 

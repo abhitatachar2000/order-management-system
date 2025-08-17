@@ -7,6 +7,7 @@ import com.oms.orders.entity.OrderEntity;
 import com.oms.orders.entity.OrderStatus;
 import com.oms.orders.repository.OrdersRepository;
 import com.oms.orders.webclient.InventoryServiceWebClient;
+import org.aspectj.weaver.ast.Or;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,12 +45,17 @@ public class OrdersService {
         }
     }
 
-    private void updateStock(OrderEntity updatedOrder) throws Exception {
+    private void updateStock(OrderEntity updatedOrder, String opKind) throws Exception {
         try {
             int itemID = updatedOrder.getItemId();
             int previousStock = inventoryServiceWebClient.getInventoryItemById(itemID).block().getQuantity();
             int orderedQuantity = updatedOrder.getQuantity();
-            int newStock = previousStock - orderedQuantity;
+            int newStock;
+            if (opKind.equals("r")) {
+                newStock = previousStock - orderedQuantity;
+            } else {
+                newStock = previousStock + orderedQuantity;
+            }
             InventoryItemDTO updatedOrderDTO = new InventoryItemDTO(itemID, newStock);
             inventoryServiceWebClient.updateInventoryAfterOperation(updatedOrderDTO).block();
         } catch (Exception e) {
@@ -87,7 +93,7 @@ public class OrdersService {
            orderEntity.setStatus(OrderStatus.NEW); // new orders are always in NEW state.
            checkOrderValidity(orderEntity);
            OrderEntity createdOrder = ordersRepository.save(orderEntity);
-           updateStock(createdOrder);
+           updateStock(createdOrder, "r");
            return createdOrder;
        } catch (Exception e) {
            logger.error("Creating new order failed. Following error occurred.");
@@ -131,19 +137,37 @@ public class OrdersService {
         }
     }
 
-    public OrderEntity updateOrder(int id, OrderEntity updatedEntity) throws RuntimeException {
+    private Boolean shouldUpdateEntity(OrderEntity updatedEntity) {
+        OrderEntity existingOrder = ordersRepository.findById(updatedEntity.getId()).orElse(null);
+        if (existingOrder == null) {
+            logger.info(String.format("Update did not happen. Could not find order with id %s", updatedEntity.getId()));
+            return false;
+        }
+        if (!(updatedEntity.getItemId() == existingOrder.getItemId() &&
+            updatedEntity.getQuantity() == existingOrder.getQuantity() &&
+            updatedEntity.getPricePerUnit() == existingOrder.getPricePerUnit() &&
+            updatedEntity.getTotalPrice() == existingOrder.getTotalPrice() &&
+            updatedEntity.getContact() == existingOrder.getContact() &&
+            updatedEntity.getStatus() != existingOrder.getStatus())) {
+            throw new RuntimeException("Cannot update order. Only order status change is supported for update.");
+        }
+        if (!isOrderStatusValid(updatedEntity.getStatus())) {
+            throw new RuntimeException(String.format("Not a defined status: %s", updatedEntity.getStatus()));
+        }
+        return true;
+    }
+
+    public OrderEntity updateOrder(int id, OrderEntity entityToUpdate) throws RuntimeException {
         try {
-            String status = updatedEntity.getStatus();
-            if (!isOrderStatusValid(status)) {
-                throw new RuntimeException(String.format("Not a defined status: %s", status));
-            }
-            OrderEntity order =  ordersRepository.findById(id).orElse(null);
-            if (order == null) {
-                logger.info(String.format("Update did not happen. Could not find order with id %s", id));
+            entityToUpdate.setId(id);
+            if (!shouldUpdateEntity(entityToUpdate)) {
                 return null;
             }
-            updatedEntity.setId(id);
-            return ordersRepository.save(updatedEntity);
+            OrderEntity updatedOrder = ordersRepository.save(entityToUpdate);
+            if (updatedOrder.getStatus() == OrderStatus.RETURNED) {
+                updateStock(updatedOrder, "a");
+            }
+            return updatedOrder;
         } catch (Exception e) {
             logger.error(String.format("Updating order with id %s failed. The following error occurred: ", id));
             e.printStackTrace();
