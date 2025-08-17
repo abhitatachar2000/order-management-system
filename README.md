@@ -10,3 +10,5 @@ The modules are as follows:
 - **Orders Module**: Manages the lifecycle of orders, validates stock with the Inventory module, retrieves pricing from the Catalog module, and calculates the total order value.  
 
 Together, these modules ensure seamless interactions and accurate processing of orders, making the system reliable and scalable for e-commerce applications.
+
+![OMS Overview](./docs/images/oms-overview-block-diagram.png)
