@@ -11,6 +11,33 @@ The modules are as follows:
 
 ![OMS Overview](./docs/images/oms-overview-block-diagram-updated.png)
 
+### Basic Interactions
+The Order Management System (OMS) currently supports three core types of user interactions:
+
+1. Catalog Management – Users can create new catalog items.
+2. Inventory Management – Users can update and maintain inventory levels to ensure accurate stock availability.
+3. Order Processing – Users can place orders through the system.
+
+At this stage, the system does not differentiate between user roles or personas. The term user refers broadly to any individual or external system that interacts with the OMS.
+
+#### 1. Creating a new catalog item
+
+To create a new catalog item, the user sends a POST request to the catalog service at the endpoint `/api/v1/catalog/items`, with a payload such as ```{ "name": "Laptop", "pricePerUnit": 1200.0, "category": "Electronics" }```.
+
+The Catalog Controller receives the request, converts the DTO into an Entity, and forwards it to the service layer for processing. The service then delegates the request to the repository to persist the entity.
+
+- If entity creation fails, the system returns a 500 Internal Server Error response to the user.
+- If entity creation succeeds, the service uses the InventoryServiceWebClient to send a POST request to the inventory module, creating a corresponding inventory item with the same item ID as the catalog item.
+
+If the inventory item creation fails, the web client raises an exception, prompting the service to roll back the catalog item creation in the repository to ensure data consistency.
+
+If the inventory item creation succeeds, the catalog service receives an acknowledgment from the web client, propagates the created catalog item back to the controller, and returns a 201 Created response to the user.
+
+![Catalog - New Item Creation](./docs/images/oms-sequence-diagram.png)
+
+
+#### 2. Updating inventory stock levels
+
 ### API Specifications For Each Microservice
 
 #### Orders API
@@ -45,4 +72,5 @@ The modules are as follows:
 | **PUT** | `/api/v1/catalog/items/{id}` | Update a catalog item by ID | ``` { "name": "Gaming Laptop", "pricePerUnit": 1500.0, "category": "Electronics" }``` | – | `id` (integer) | **200 OK** – Returns updated catalog item.<br>**500 Internal Server Error** – If update fails. |
 | **DELETE** | `/api/v1/catalog/items/{id}` | Delete a catalog item by ID | – | – | `id` (integer) | **204 No Content** – Successfully deleted.<br>**404 Not Found** – If item does not exist.<br>**500 Internal Server Error** – If deletion fails. |
 | **DELETE** | `/api/v1/catalog/items?category={category}` | Delete all catalog items by category | – | `category` (string) | – | **204 No Content** – Items deleted.<br>**404 Not Found** – If no items in that category exist.<br>**500 Internal Server Error** – If deletion fails. |
+
 
