@@ -38,6 +38,13 @@ If the inventory item creation succeeds, the catalog service receives an acknowl
 
 #### 2. Updating inventory stock levels
 
+When a new item is created in the catalog, a corresponding entry with the same ID is automatically created in the inventory. By default, the stock level is initialized to 0. The stock levels need to be updated manually to match the actual stock units. To reflect actual stock quantities, the stock level must be updated manually. This can be done using a PUT request to the following endpoint: `api/v1/inventory/items/{id}` with a payload, for example ```{"id": 1, "10"}```. If the item does not exist, then a 404 response is sent back to the user. If the item exists, then an update is attempted. 
+
+- If the update fails, a 500 error response is sent back to the user.
+- If the update is successful, then a 200 response is sent back to the user.
+
+![Inventory - Updating inventory stock levels](./docs/images/oms-inv-sd.png)
+
 ### API Specifications For Each Microservice
 
 #### Orders API
@@ -72,5 +79,6 @@ If the inventory item creation succeeds, the catalog service receives an acknowl
 | **PUT** | `/api/v1/catalog/items/{id}` | Update a catalog item by ID | ``` { "name": "Gaming Laptop", "pricePerUnit": 1500.0, "category": "Electronics" }``` | – | `id` (integer) | **200 OK** – Returns updated catalog item.<br>**500 Internal Server Error** – If update fails. |
 | **DELETE** | `/api/v1/catalog/items/{id}` | Delete a catalog item by ID | – | – | `id` (integer) | **204 No Content** – Successfully deleted.<br>**404 Not Found** – If item does not exist.<br>**500 Internal Server Error** – If deletion fails. |
 | **DELETE** | `/api/v1/catalog/items?category={category}` | Delete all catalog items by category | – | `category` (string) | – | **204 No Content** – Items deleted.<br>**404 Not Found** – If no items in that category exist.<br>**500 Internal Server Error** – If deletion fails. |
+
 
 
