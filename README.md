@@ -1,6 +1,6 @@
 # Order Management System
 
-### Overview
+## Overview
 
 The **Order Management System** is a modular Spring Boot application designed for e-commerce platforms to manage the product catalog, inventory, and order lifecycle. It allows users to browse products, check stock availability, and place orders while ensuring real-time validation of product details and stock. The system is structured into three independent modules that communicate with each other using **WebClients**.
 
@@ -11,7 +11,7 @@ The modules are as follows:
 
 ![OMS Overview](./docs/images/oms-overview-block-diagram-updated.png)
 
-### Basic Interactions
+## Basic Interactions
 The Order Management System (OMS) currently supports three core types of user interactions:
 
 1. Catalog Management – Users can create new catalog items.
@@ -45,7 +45,22 @@ When a new item is created in the catalog, a corresponding entry with the same I
 
 ![Inventory - Updating inventory stock levels](./docs/images/oms-inv-sd.png)
 
-### API Specifications For Each Microservice
+
+#### 3. Creating a new order
+
+The user can place the new order by sending a POST request to `/api/v1/orders` with a payload as ```{ "itemId": 1, "quantity": 2, "status": "new", "contact": "test@example.com" }```. The `OrdesController` makes use of the `CatalogServiceWebClient` to fetch the catalog item included in the order.
+
+- If the catalog does not contain the item, an exception is returned, and the user is responded with a 500 Internal Server Error.
+- If the catalog contains the item, the item is returned to the controller, which uses the item to fetch the price per unit and calculate the total cost.
+
+The controller then forwards the entity to the service. The service makes use of the InventoryServiceWebClient to fetch the inventory item corresponding to the order.
+
+- If the inventory does not contain the item, an exception is returned, and the user is responded with a 500 Internal Server Error.
+- If the inventory contains the item, then the item is returned to the service, which uses the item to check if the order quantity is <= to the stock available.
+
+
+
+## API Specifications For Each Microservice
 
 #### Orders API
 
@@ -79,6 +94,7 @@ When a new item is created in the catalog, a corresponding entry with the same I
 | **PUT** | `/api/v1/catalog/items/{id}` | Update a catalog item by ID | ``` { "name": "Gaming Laptop", "pricePerUnit": 1500.0, "category": "Electronics" }``` | – | `id` (integer) | **200 OK** – Returns updated catalog item.<br>**500 Internal Server Error** – If update fails. |
 | **DELETE** | `/api/v1/catalog/items/{id}` | Delete a catalog item by ID | – | – | `id` (integer) | **204 No Content** – Successfully deleted.<br>**404 Not Found** – If item does not exist.<br>**500 Internal Server Error** – If deletion fails. |
 | **DELETE** | `/api/v1/catalog/items?category={category}` | Delete all catalog items by category | – | `category` (string) | – | **204 No Content** – Items deleted.<br>**404 Not Found** – If no items in that category exist.<br>**500 Internal Server Error** – If deletion fails. |
+
 
 
 
