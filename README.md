@@ -58,7 +58,9 @@ The controller then forwards the entity to the service. The service makes use of
 - If the inventory does not contain the item, an exception is returned, and the user is responded with a 500 Internal Server Error.
 - If the inventory contains the item, then the item is returned to the service, which uses the item to check if the order quantity is <= to the stock available.
 
+If the stock is not sufficient to place the order, a 500 Internal Server Error is returned to the user with a message that sufficient stock is not available. If not, then the order is successfully stored in the DB. 
 
+Once the order is stored, a new request is made to the inventory service to update the stock.
 
 ## API Specifications For Each Microservice
 
@@ -94,6 +96,7 @@ The controller then forwards the entity to the service. The service makes use of
 | **PUT** | `/api/v1/catalog/items/{id}` | Update a catalog item by ID | ``` { "name": "Gaming Laptop", "pricePerUnit": 1500.0, "category": "Electronics" }``` | – | `id` (integer) | **200 OK** – Returns updated catalog item.<br>**500 Internal Server Error** – If update fails. |
 | **DELETE** | `/api/v1/catalog/items/{id}` | Delete a catalog item by ID | – | – | `id` (integer) | **204 No Content** – Successfully deleted.<br>**404 Not Found** – If item does not exist.<br>**500 Internal Server Error** – If deletion fails. |
 | **DELETE** | `/api/v1/catalog/items?category={category}` | Delete all catalog items by category | – | `category` (string) | – | **204 No Content** – Items deleted.<br>**404 Not Found** – If no items in that category exist.<br>**500 Internal Server Error** – If deletion fails. |
+
 
 
 
