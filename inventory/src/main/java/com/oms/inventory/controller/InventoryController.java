@@ -71,7 +71,7 @@ public class InventoryController {
         }
     }
 
-    @PatchMapping("/items")
+    @PutMapping("/items")
     public ResponseEntity<?> updateItemById( @RequestBody InventoryItemDTO item){
         try {
             InventoryItemEntity entity = dtoToEntityConverter(item);
