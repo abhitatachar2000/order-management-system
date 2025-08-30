@@ -41,7 +41,7 @@ public class InventoryServiceWebClient {
         String uri = "/api/v1/inventory/items";
         String correlationID = MDC.get(CORRELATION_ID_HEADER);
 
-        return webClient.patch()
+        return webClient.put()
                 .uri(uri)
                 .header(CORRELATION_ID_HEADER, correlationID)
                 .bodyValue(om.writeValueAsString(inventoryItemDTO))
